@@ -68,7 +68,7 @@ class Gbasf2PathTask(Task):
             self._send_to_grid()
             while self.get_project_status() in {JobStatus.running, JobStatus.idle}:
                 time.sleep(self.query_time_intervall)
-            if self.get_project_status() == JobStatus.successful():
+            if self.get_project_status() == JobStatus.successful:
                 self._download_dataset(self.dataset_download_directory)
             else:
                 warn("Project unsuccessful")

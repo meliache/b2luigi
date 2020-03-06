@@ -66,12 +66,13 @@ class Gbasf2PathTask(Task):
             print(f"Finished project \"{self.project_name}\" already exists.")
         else:
             self._send_to_grid()
-            while self.get_project_status() in {JobStatus.running, JobStatus.idle}:
-                time.sleep(self.query_time_intervall)
-            if self.get_project_status() == JobStatus.successful:
-                self._download_dataset(self.dataset_download_directory)
-            else:
-                warn("Project unsuccessful")
+
+        while self.get_project_status() in {JobStatus.running, JobStatus.idle}:
+            time.sleep(self.query_time_intervall)
+        if self.get_project_status() == JobStatus.successful:
+            self._download_dataset(self.dataset_download_directory)
+        else:
+            warn("Project unsuccessful")
 
     def on_failure(self, exception):
         """Remove output fields so that task is not mistaken as done in case of failure"""

@@ -70,7 +70,7 @@ class Gbasf2PathTask(Task):
         while self.get_project_status() in {JobStatus.running, JobStatus.idle}:
             time.sleep(self.query_time_intervall)
         if self.get_project_status() == JobStatus.successful:
-            self._download_dataset(self.dataset_download_directory)
+            self._download_dataset(self.get_output_file_name(self.dataset_download_directory))
         else:
             warn("Project unsuccessful")
 
@@ -189,7 +189,7 @@ print(basf2.statistics)
         os.makedirs(output_directory, exist_ok=True)
         try:
             command = shlex.split(f"gb2_ds_get --force {self.project_name}")
-            print("Downloading dataset with command ", " ".join(command))
+            print(f"Downloading dataset in directory {output_directory} with command", " ".join(command))
             output = subprocess.check_output(command, env=self.env, encoding="utf-8", cwd=output_directory)
             print(output)
             if output.strip() == "No file found":

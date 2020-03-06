@@ -63,7 +63,7 @@ class Gbasf2PathTask(Task):
         self._write_path_to_file()
         self._create_wrapper_steering_file()
         if self._check_project_exists():
-            print(f"Finished project \"{self.project_name}\" already exists.")
+            print(f"Project \"{self.project_name}\" already exists.")
         else:
             self._send_to_grid()
 

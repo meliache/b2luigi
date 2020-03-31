@@ -1,0 +1,630 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>b2luigi.basf2_helper package &mdash; b2luigi 0.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Run Modes" href="run_modes.html" />
+    <link rel="prev" title="API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> b2luigi
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/batch.html">Batch Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/basf2-examples.html">Belle II specific examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html#top-level-function">Top-Level Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#super-hero-task-classes">Super-hero Task Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#settings">Settings</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="api.html#other-functions">Other functions</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">b2luigi.basf2_helper package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-b2luigi.basf2_helper.data">b2luigi.basf2_helper.data module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-b2luigi.basf2_helper.targets">b2luigi.basf2_helper.targets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-b2luigi.basf2_helper.tasks">b2luigi.basf2_helper.tasks module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-b2luigi.basf2_helper.utils">b2luigi.basf2_helper.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_modes.html">Run Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/development.html">Development and TODOs</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">b2luigi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="api.html">API Documentation</a> &raquo;</li>
+        
+      <li>b2luigi.basf2_helper package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/documentation/b2luigi.basf2_helper.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="b2luigi-basf2-helper-package">
+<h1>b2luigi.basf2_helper package<a class="headerlink" href="#b2luigi-basf2-helper-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-b2luigi.basf2_helper.data">
+<span id="b2luigi-basf2-helper-data-module"></span><h2>b2luigi.basf2_helper.data module<a class="headerlink" href="#module-b2luigi.basf2_helper.data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="b2luigi.basf2_helper.data.CdstDataTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">CdstDataTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.CdstDataTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.data.DstDataTask" title="b2luigi.basf2_helper.data.DstDataTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.data.DstDataTask</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.CdstDataTask.data_mode">
+<code class="sig-name descname">data_mode</code><em class="property"> = 'cdst'</em><a class="headerlink" href="#b2luigi.basf2_helper.data.CdstDataTask.data_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.data.CdstDataTask.output">
+<code class="sig-name descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.CdstDataTask.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output that this Task produces.</p>
+<p>The output of the Task determines if the Task needs to be run–the task
+is considered finished iff the outputs all exist. Subclasses should
+override this method to return a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> or a list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> instances.</p>
+<dl class="simple">
+<dt>Implementation note</dt><dd><p>If running multiple workers, the output must be a resource that is accessible
+by all workers, such as a DFS or database. Otherwise, workers might compute
+the same output since they don’t see the work done by other workers.</p>
+</dd>
+</dl>
+<p>See <span class="xref std std-ref">Task.output</span></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.data.DataMode">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">DataMode</code><a class="headerlink" href="#b2luigi.basf2_helper.data.DataMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataMode.cdst">
+<code class="sig-name descname">cdst</code><em class="property"> = 'cdst'</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataMode.cdst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataMode.mdst">
+<code class="sig-name descname">mdst</code><em class="property"> = 'mdst'</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataMode.mdst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataMode.raw">
+<code class="sig-name descname">raw</code><em class="property"> = 'raw'</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataMode.raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataMode.skimmed_raw">
+<code class="sig-name descname">skimmed_raw</code><em class="property"> = 'skimmed_raw'</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataMode.skimmed_raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.data.DataTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">DataTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.DataTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.core.task.ExternalTask</span></code></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataTask.data_mode">
+<code class="sig-name descname">data_mode</code><em class="property"> = &lt;luigi.parameter.EnumParameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataTask.data_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataTask.experiment_number">
+<code class="sig-name descname">experiment_number</code><em class="property"> = &lt;luigi.parameter.IntParameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataTask.experiment_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataTask.file_name">
+<code class="sig-name descname">file_name</code><em class="property"> = &lt;luigi.parameter.Parameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataTask.file_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataTask.prefix">
+<code class="sig-name descname">prefix</code><em class="property"> = &lt;luigi.parameter.Parameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataTask.prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DataTask.run_number">
+<code class="sig-name descname">run_number</code><em class="property"> = &lt;luigi.parameter.IntParameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DataTask.run_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.data.DstDataTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">DstDataTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.DstDataTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.data.DataTask" title="b2luigi.basf2_helper.data.DataTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.data.DataTask</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DstDataTask.database">
+<code class="sig-name descname">database</code><em class="property"> = &lt;luigi.parameter.IntParameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DstDataTask.database" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.data.DstDataTask.output">
+<code class="sig-name descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.DstDataTask.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output that this Task produces.</p>
+<p>The output of the Task determines if the Task needs to be run–the task
+is considered finished iff the outputs all exist. Subclasses should
+override this method to return a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> or a list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> instances.</p>
+<dl class="simple">
+<dt>Implementation note</dt><dd><p>If running multiple workers, the output must be a resource that is accessible
+by all workers, such as a DFS or database. Otherwise, workers might compute
+the same output since they don’t see the work done by other workers.</p>
+</dd>
+</dl>
+<p>See <span class="xref std std-ref">Task.output</span></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DstDataTask.prod">
+<code class="sig-name descname">prod</code><em class="property"> = &lt;luigi.parameter.IntParameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DstDataTask.prod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.DstDataTask.release">
+<code class="sig-name descname">release</code><em class="property"> = &lt;luigi.parameter.Parameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.data.DstDataTask.release" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.data.MdstDataTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">MdstDataTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.MdstDataTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.data.DstDataTask" title="b2luigi.basf2_helper.data.DstDataTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.data.DstDataTask</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.MdstDataTask.data_mode">
+<code class="sig-name descname">data_mode</code><em class="property"> = 'mdst'</em><a class="headerlink" href="#b2luigi.basf2_helper.data.MdstDataTask.data_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.data.MdstDataTask.output">
+<code class="sig-name descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.MdstDataTask.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output that this Task produces.</p>
+<p>The output of the Task determines if the Task needs to be run–the task
+is considered finished iff the outputs all exist. Subclasses should
+override this method to return a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> or a list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> instances.</p>
+<dl class="simple">
+<dt>Implementation note</dt><dd><p>If running multiple workers, the output must be a resource that is accessible
+by all workers, such as a DFS or database. Otherwise, workers might compute
+the same output since they don’t see the work done by other workers.</p>
+</dd>
+</dl>
+<p>See <span class="xref std std-ref">Task.output</span></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.data.RawDataTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">RawDataTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.RawDataTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.data.DataTask" title="b2luigi.basf2_helper.data.DataTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.data.DataTask</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.RawDataTask.data_mode">
+<code class="sig-name descname">data_mode</code><em class="property"> = 'raw'</em><a class="headerlink" href="#b2luigi.basf2_helper.data.RawDataTask.data_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.data.RawDataTask.output">
+<code class="sig-name descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.RawDataTask.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output that this Task produces.</p>
+<p>The output of the Task determines if the Task needs to be run–the task
+is considered finished iff the outputs all exist. Subclasses should
+override this method to return a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> or a list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> instances.</p>
+<dl class="simple">
+<dt>Implementation note</dt><dd><p>If running multiple workers, the output must be a resource that is accessible
+by all workers, such as a DFS or database. Otherwise, workers might compute
+the same output since they don’t see the work done by other workers.</p>
+</dd>
+</dl>
+<p>See <span class="xref std std-ref">Task.output</span></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.data.SkimmedRawDataTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">SkimmedRawDataTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.SkimmedRawDataTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.data.DstDataTask" title="b2luigi.basf2_helper.data.DstDataTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.data.DstDataTask</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.data.SkimmedRawDataTask.data_mode">
+<code class="sig-name descname">data_mode</code><em class="property"> = 'skimmed_raw'</em><a class="headerlink" href="#b2luigi.basf2_helper.data.SkimmedRawDataTask.data_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.data.SkimmedRawDataTask.output">
+<code class="sig-name descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.SkimmedRawDataTask.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output that this Task produces.</p>
+<p>The output of the Task determines if the Task needs to be run–the task
+is considered finished iff the outputs all exist. Subclasses should
+override this method to return a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> or a list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> instances.</p>
+<dl class="simple">
+<dt>Implementation note</dt><dd><p>If running multiple workers, the output must be a resource that is accessible
+by all workers, such as a DFS or database. Otherwise, workers might compute
+the same output since they don’t see the work done by other workers.</p>
+</dd>
+</dl>
+<p>See <span class="xref std std-ref">Task.output</span></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="b2luigi.basf2_helper.data.clone_on_cdst">
+<code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">clone_on_cdst</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">task_class</em>, <em class="sig-param">experiment_number</em>, <em class="sig-param">run_number</em>, <em class="sig-param">release</em>, <em class="sig-param">prod</em>, <em class="sig-param">database</em>, <em class="sig-param">prefix=None</em>, <em class="sig-param">file_name=None</em>, <em class="sig-param">**additional_kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.clone_on_cdst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="b2luigi.basf2_helper.data.clone_on_mdst">
+<code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">clone_on_mdst</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">task_class</em>, <em class="sig-param">experiment_number</em>, <em class="sig-param">run_number</em>, <em class="sig-param">release</em>, <em class="sig-param">prod</em>, <em class="sig-param">database</em>, <em class="sig-param">prefix=None</em>, <em class="sig-param">file_name=None</em>, <em class="sig-param">**additional_kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.clone_on_mdst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="b2luigi.basf2_helper.data.clone_on_raw">
+<code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">clone_on_raw</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">task_class</em>, <em class="sig-param">experiment_number</em>, <em class="sig-param">run_number</em>, <em class="sig-param">prefix=None</em>, <em class="sig-param">file_name=None</em>, <em class="sig-param">**additional_kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.clone_on_raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="b2luigi.basf2_helper.data.clone_on_skimmed_raw">
+<code class="sig-prename descclassname">b2luigi.basf2_helper.data.</code><code class="sig-name descname">clone_on_skimmed_raw</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">task_class</em>, <em class="sig-param">experiment_number</em>, <em class="sig-param">run_number</em>, <em class="sig-param">release</em>, <em class="sig-param">prod</em>, <em class="sig-param">database</em>, <em class="sig-param">prefix=None</em>, <em class="sig-param">file_name=None</em>, <em class="sig-param">**additional_kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.data.clone_on_skimmed_raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-b2luigi.basf2_helper.targets">
+<span id="b2luigi-basf2-helper-targets-module"></span><h2>b2luigi.basf2_helper.targets module<a class="headerlink" href="#module-b2luigi.basf2_helper.targets" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="b2luigi.basf2_helper.targets.ROOTLocalTarget">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.targets.</code><code class="sig-name descname">ROOTLocalTarget</code><span class="sig-paren">(</span><em class="sig-param">path=None</em>, <em class="sig-param">format=None</em>, <em class="sig-param">is_tmp=False</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.targets.ROOTLocalTarget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">luigi.local_target.LocalTarget</span></code></p>
+<dl class="method">
+<dt id="b2luigi.basf2_helper.targets.ROOTLocalTarget.exists">
+<code class="sig-name descname">exists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.targets.ROOTLocalTarget.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the path for this FileSystemTarget exists; <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<p>This method is implemented by using <code class="xref py py-attr docutils literal notranslate"><span class="pre">fs</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-b2luigi.basf2_helper.tasks">
+<span id="b2luigi-basf2-helper-tasks-module"></span><h2>b2luigi.basf2_helper.tasks module<a class="headerlink" href="#module-b2luigi.basf2_helper.tasks" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="b2luigi.basf2_helper.tasks.Basf2FileMergeTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.tasks.</code><code class="sig-name descname">Basf2FileMergeTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2FileMergeTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.tasks.MergerTask" title="b2luigi.basf2_helper.tasks.MergerTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.tasks.MergerTask</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.tasks.Basf2FileMergeTask.cmd">
+<code class="sig-name descname">cmd</code><em class="property"> = ['b2file-merge', '-f']</em><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2FileMergeTask.cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.tasks.Basf2PathTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.tasks.</code><code class="sig-name descname">Basf2PathTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2PathTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.tasks.Basf2Task" title="b2luigi.basf2_helper.tasks.Basf2Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.tasks.Basf2Task</span></code></a></p>
+<dl class="method">
+<dt id="b2luigi.basf2_helper.tasks.Basf2PathTask.create_path">
+<code class="sig-name descname">create_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2PathTask.create_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.tasks.Basf2PathTask.max_event">
+<code class="sig-name descname">max_event</code><em class="property"> = &lt;luigi.parameter.IntParameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2PathTask.max_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.tasks.Basf2PathTask.num_processes">
+<code class="sig-name descname">num_processes</code><em class="property"> = &lt;luigi.parameter.IntParameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2PathTask.num_processes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.tasks.Basf2PathTask.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2PathTask.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override this method with your normal run function.
+Do not touch the run function itself!</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.tasks.Basf2Task">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.tasks.</code><code class="sig-name descname">Basf2Task</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2Task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.core.dispatchable_task.DispatchableTask</span></code></p>
+<dl class="method">
+<dt id="b2luigi.basf2_helper.tasks.Basf2Task.get_output_file_target">
+<code class="sig-name descname">get_output_file_target</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2Task.get_output_file_target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.tasks.Basf2Task.get_serialized_parameters">
+<code class="sig-name descname">get_serialized_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2Task.get_serialized_parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.tasks.Basf2Task.git_hash">
+<code class="sig-name descname">git_hash</code><em class="property"> = &lt;luigi.parameter.Parameter object&gt;</em><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2Task.git_hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.tasks.Basf2nTupleMergeTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.tasks.</code><code class="sig-name descname">Basf2nTupleMergeTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2nTupleMergeTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.tasks.MergerTask" title="b2luigi.basf2_helper.tasks.MergerTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.tasks.MergerTask</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.tasks.Basf2nTupleMergeTask.cmd">
+<code class="sig-name descname">cmd</code><em class="property"> = ['fei_merge_files']</em><a class="headerlink" href="#b2luigi.basf2_helper.tasks.Basf2nTupleMergeTask.cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.tasks.HaddTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.tasks.</code><code class="sig-name descname">HaddTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.HaddTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.tasks.MergerTask" title="b2luigi.basf2_helper.tasks.MergerTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.tasks.MergerTask</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.tasks.HaddTask.cmd">
+<code class="sig-name descname">cmd</code><em class="property"> = ['hadd', '-f']</em><a class="headerlink" href="#b2luigi.basf2_helper.tasks.HaddTask.cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.tasks.MergerTask">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.tasks.</code><code class="sig-name descname">MergerTask</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.MergerTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.tasks.Basf2Task" title="b2luigi.basf2_helper.tasks.Basf2Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.tasks.Basf2Task</span></code></a></p>
+<dl class="attribute">
+<dt id="b2luigi.basf2_helper.tasks.MergerTask.cmd">
+<code class="sig-name descname">cmd</code><em class="property"> = []</em><a class="headerlink" href="#b2luigi.basf2_helper.tasks.MergerTask.cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.tasks.MergerTask.output">
+<code class="sig-name descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.MergerTask.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output that this Task produces.</p>
+<p>The output of the Task determines if the Task needs to be run–the task
+is considered finished iff the outputs all exist. Subclasses should
+override this method to return a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> or a list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> instances.</p>
+<dl class="simple">
+<dt>Implementation note</dt><dd><p>If running multiple workers, the output must be a resource that is accessible
+by all workers, such as a DFS or database. Otherwise, workers might compute
+the same output since they don’t see the work done by other workers.</p>
+</dd>
+</dl>
+<p>See <span class="xref std std-ref">Task.output</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.tasks.MergerTask.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.MergerTask.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override this method with your normal run function.
+Do not touch the run function itself!</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="b2luigi.basf2_helper.tasks.SimplifiedOutputBasf2Task">
+<em class="property">class </em><code class="sig-prename descclassname">b2luigi.basf2_helper.tasks.</code><code class="sig-name descname">SimplifiedOutputBasf2Task</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.SimplifiedOutputBasf2Task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#b2luigi.basf2_helper.tasks.Basf2PathTask" title="b2luigi.basf2_helper.tasks.Basf2PathTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.basf2_helper.tasks.Basf2PathTask</span></code></a></p>
+<dl class="method">
+<dt id="b2luigi.basf2_helper.tasks.SimplifiedOutputBasf2Task.create_path">
+<code class="sig-name descname">create_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.SimplifiedOutputBasf2Task.create_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="b2luigi.basf2_helper.tasks.SimplifiedOutputBasf2Task.output">
+<code class="sig-name descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.tasks.SimplifiedOutputBasf2Task.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output that this Task produces.</p>
+<p>The output of the Task determines if the Task needs to be run–the task
+is considered finished iff the outputs all exist. Subclasses should
+override this method to return a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> or a list of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code> instances.</p>
+<dl class="simple">
+<dt>Implementation note</dt><dd><p>If running multiple workers, the output must be a resource that is accessible
+by all workers, such as a DFS or database. Otherwise, workers might compute
+the same output since they don’t see the work done by other workers.</p>
+</dd>
+</dl>
+<p>See <span class="xref std std-ref">Task.output</span></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-b2luigi.basf2_helper.utils">
+<span id="b2luigi-basf2-helper-utils-module"></span><h2>b2luigi.basf2_helper.utils module<a class="headerlink" href="#module-b2luigi.basf2_helper.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="b2luigi.basf2_helper.utils.get_basf2_git_hash">
+<code class="sig-prename descclassname">b2luigi.basf2_helper.utils.</code><code class="sig-name descname">get_basf2_git_hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.basf2_helper.utils.get_basf2_git_hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="run_modes.html" class="btn btn-neutral float-right" title="Run Modes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="api.html" class="btn btn-neutral float-left" title="API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Nils Braun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

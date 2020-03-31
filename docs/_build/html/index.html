@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>b2luigi &mdash; b2luigi 0.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="usage/installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> b2luigi
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/batch.html">Batch Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/basf2-examples.html">Belle II specific examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation/api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation/run_modes.html">Run Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/development.html">Development and TODOs</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">b2luigi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>b2luigi</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="b2luigi">
+<h1>b2luigi<a class="headerlink" href="#b2luigi" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> - bringing batch 2 luigi!</p>
+<p><code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> is a helper package for  <code class="docutils literal notranslate"><span class="pre">luigi</span></code> for scheduling large luigi workflows on a batch system.
+It is as simple as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">b2luigi</span>
+
+
+<span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">b2luigi</span><span class="o">.</span><span class="n">Task</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">LocalTarget</span><span class="p">(</span><span class="s2">&quot;output_file.txt&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">()</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;This is a test</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">b2luigi</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">MyTask</span><span class="p">(),</span> <span class="n">batch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Jump right into it with out <a class="reference internal" href="usage/quickstart.html#quick-start-label"><span class="std std-ref">Quick Start</span></a>.</p>
+<p>If you have never worked with <code class="docutils literal notranslate"><span class="pre">luigi</span></code> before, you may want to have a look into the <a class="reference external" href="http://luigi.readthedocs.io/en/stable/">luigi documentation</a>.
+But you can learn most of the nice features also from this documentation!</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The API of <code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> is still under construction.
+Please remember this when using the package in production!</p>
+</div>
+<div class="section" id="why-not-use-the-already-created-batch-tasks">
+<h2>Why not use the already created batch tasks?<a class="headerlink" href="#why-not-use-the-already-created-batch-tasks" title="Permalink to this headline">¶</a></h2>
+<p>Luigi already contains a large set of tasks for scheduling and monitoring batch jobs <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.
+But for thousands of tasks in very large projects with different task-defining libraries, you have some problems:</p>
+<ul class="simple">
+<li><p><strong>You want to run many (many many!) batch jobs in parallel</strong>
+In other luigi batch implementations, for every running batch job you also need a running task that monitors it.
+On most of the systems, the maximal number of processes is limited per user, so you will not be able to run more
+batch jobs than this.
+But what do you do if you have thousands of tasks to do?</p></li>
+<li><p><strong>You have already a large set of luigi tasks in your project</strong>
+In other implementations you either have to override a <code class="docutils literal notranslate"><span class="pre">work</span></code> function (and you are not allowed to touch
+the <code class="docutils literal notranslate"><span class="pre">run</span></code> function) or they can only run an external command, which you need to define.
+The first approach plays not well when mixing non-batch and batch task libraries and the second
+has problems when you need to pass complex arguments to the external command (via command line).</p></li>
+<li><p><strong>You do not know which batch system you will run on</strong>
+Currently, the batch tasks are mostly defined for a specific batch system. But what if you want to
+switch from AWS to Azure? From LSF to SGE?</p></li>
+</ul>
+<p>Entering <code class="docutils literal notranslate"><span class="pre">b2luigi</span></code>, which tries to solve all this (but was heavily inspired by the previous implementations):</p>
+<ul class="simple">
+<li><p>You can run as many tasks as your batch system can handle in parallel! There will only be a single process running
+on your submission machine.</p></li>
+<li><p>No need to rewrite your tasks! Just call them with <code class="docutils literal notranslate"><span class="pre">b2luigi.process(..,</span> <span class="pre">batch=True)</span></code> or with
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">file.py</span> <span class="pre">--batch</span></code> and you are ready to go!</p></li>
+<li><p>Switching the batch system is just a single change in a config file or one line in python.
+In the future, there will even be an automatic discovery of the batch system to use.</p></li>
+</ul>
+</div>
+<div class="section" id="it-this-the-only-thing-i-can-do-with-b2luigi">
+<h2>It this the only thing I can do with b2luigi?<a class="headerlink" href="#it-this-the-only-thing-i-can-do-with-b2luigi" title="Permalink to this headline">¶</a></h2>
+<p>As <code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> should help you with large luigi projects, we have also included some helper functionalities for
+<code class="docutils literal notranslate"><span class="pre">luigi</span></code> tasks and task handling.
+<code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> task is a super-hero version of <code class="docutils literal notranslate"><span class="pre">luigi</span></code> task, with simpler handling for output and input files.
+Also, we give you working examples and best-practices for better data management and how to accomplish your goals,
+that we have learned with time.</p>
+</div>
+<div class="section" id="why-are-you-still-talking-lets-use-it">
+<h2>Why are you still talking, lets use it!<a class="headerlink" href="#why-are-you-still-talking-lets-use-it" title="Permalink to this headline">¶</a></h2>
+<p>Have a look into the <a class="reference internal" href="usage/quickstart.html#quick-start-label"><span class="std std-ref">Quick Start</span></a>.</p>
+<p>You can also start reading the <a class="reference internal" href="documentation/api.html#api-documentation-label"><span class="std std-ref">API Documentation</span></a> or the code on <a class="reference external" href="https://github.com/nils-braun/b2luigi">github</a>.</p>
+<p>If you find any bugs or want to improve the documentation, please send me a pull request.</p>
+<p>This project is in beta. Please be extra cautious when using in production mode.
+You can help me by working with one of the todo items described in <a class="reference internal" href="advanced/development.html#development-label"><span class="std std-ref">Development and TODOs</span></a>.</p>
+</div>
+<div class="section" id="content">
+<h2>Content<a class="headerlink" href="#content" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage/installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage/installation.html#b2luigi-and-belle-ii">b2luigi and Belle II</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/batch.html">Batch Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage/batch.html#choosing-the-batch-system">Choosing the batch system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/batch.html#choosing-the-environment">Choosing the Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/batch.html#file-system">File System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/batch.html#drawbacks-of-the-batch-mode">Drawbacks of the batch mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/batch.html#batch-system-specific-settings">Batch System Specific Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/batch.html#add-your-own-batch-system">Add your own batch system</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/basf2-examples.html">Belle II specific examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced/basf2-examples.html#running-at-the-naf">Running at the NAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/basf2-examples.html#running-at-kekcc">Running at KEKCC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/basf2-examples.html#ntuple-generation">nTuple Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/basf2-examples.html#standard-simulation-reconstruction-and-some-ntuple-generation">Standard Simulation, Reconstruction and some nTuple Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation/api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation/api.html#top-level-function">Top-Level Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation/api.html#super-hero-task-classes">Super-hero Task Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation/api.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation/api.html#settings">Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation/api.html#other-functions">Other functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation/run_modes.html">Run Modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation/run_modes.html#start-a-central-scheduler">Start a Central Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced/faq.html#can-i-specify-my-own-paths-for-the-log-files-for-tasks-running-on-a-batch-system">Can I specify my own paths for the log files for tasks running on a batch system?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/faq.html#can-i-exclude-one-job-from-batch-processing">Can I exclude one job from batch processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/faq.html#how-do-i-handle-parameter-values-which-include-or-other-unusual-characters">How do I handle parameter values which include “/” (or other unusual characters)?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/faq.html#what-does-the-valueerror-the-task-id-task-task-id-to-be-executed-mean">What does the ValueError “The task id {task.task_id} to be executed…” mean?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/development.html">Development and TODOs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced/development.html#local-development">Local Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/development.html#open-todos">Open TODOs</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="the-name">
+<h2>The name<a class="headerlink" href="#the-name" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> stands for multiple things at the same time:</p>
+<ul class="simple">
+<li><p>It brings <strong>b</strong>atch to (<strong>2</strong>) luigi.</p></li>
+<li><p>It helps you with the <strong>b</strong>read and <strong>b</strong>utter work in luigi (e.g. proper data management)</p></li>
+<li><p>It was developed for the <a class="reference external" href="http://belle2.org/">Belle II</a> experiment.</p></li>
+</ul>
+</div>
+<div class="section" id="the-team">
+<h2>The team<a class="headerlink" href="#the-team" title="Permalink to this headline">¶</a></h2>
+<p>Main developer:</p>
+<ul class="simple">
+<li><p>Nils Braun (<a class="reference external" href="http://github.com/nils-braun">nils-braun</a>)</p></li>
+</ul>
+<p>Features, fixing, help and testing:</p>
+<ul class="simple">
+<li><p>Felix Metzner</p></li>
+<li><p>Patrick Ecker</p></li>
+<li><p>Jochen Gemmler</p></li>
+<li><p>Michael Eliachevitch</p></li>
+<li><p>Maximilian Welsch</p></li>
+</ul>
+<p>Stolen ideas:</p>
+<ul class="simple">
+<li><p>Implementation of SGE batch system (<a class="reference external" href="https://github.com/spotify/luigi/blob/master/luigi/contrib/sge.py">sge</a>).</p></li>
+<li><p>Implementation of LSF batch system (<a class="reference external" href="https://github.com/spotify/luigi/pull/2373/files">lsf</a>).</p></li>
+</ul>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p><a class="reference external" href="https://github.com/spotify/luigi/blob/master/luigi/contrib/sge.py">https://github.com/spotify/luigi/blob/master/luigi/contrib/sge.py</a></p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="usage/installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Nils Braun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

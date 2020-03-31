@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FAQ &mdash; b2luigi 0.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Development and TODOs" href="development.html" />
+    <link rel="prev" title="Run Modes" href="../documentation/run_modes.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> b2luigi
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/batch.html">Batch Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basf2-examples.html">Belle II specific examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/run_modes.html">Run Modes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#can-i-specify-my-own-paths-for-the-log-files-for-tasks-running-on-a-batch-system">Can I specify my own paths for the log files for tasks running on a batch system?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#can-i-exclude-one-job-from-batch-processing">Can I exclude one job from batch processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-do-i-handle-parameter-values-which-include-or-other-unusual-characters">How do I handle parameter values which include “/” (or other unusual characters)?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-does-the-valueerror-the-task-id-task-task-id-to-be-executed-mean">What does the ValueError “The task id {task.task_id} to be executed…” mean?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development and TODOs</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">b2luigi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>FAQ</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/advanced/faq.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="faq">
+<span id="faq-label"></span><h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="can-i-specify-my-own-paths-for-the-log-files-for-tasks-running-on-a-batch-system">
+<h2>Can I specify my own paths for the log files for tasks running on a batch system?<a class="headerlink" href="#can-i-specify-my-own-paths-for-the-log-files-for-tasks-running-on-a-batch-system" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> will automatically create log files for the <code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code>
+output of a task processed on a batch system. The paths of these log files are defined
+relative to the location of the executed python file and contain the parameter of
+the task.
+In some cases one might one to specify other paths for the log files. To achieve this,
+a own <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_log_file_dir()</span></code> method of the task class must be implemented. This method
+must return a directory path for the stdout and the stderr files, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyBatchTask</span><span class="p">(</span><span class="n">b2luigi</span><span class="o">.</span><span class="n">Task</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">get_log_file_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="s2">&quot;logs&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> will use this method if it is defined and write the log output in the respective
+files. Be careful, though, as these log files will of course be overwritten if more than one
+task receive the same paths to write to!</p>
+</div>
+<div class="section" id="can-i-exclude-one-job-from-batch-processing">
+<h2>Can I exclude one job from batch processing<a class="headerlink" href="#can-i-exclude-one-job-from-batch-processing" title="Permalink to this headline">¶</a></h2>
+<p>The setting <code class="docutils literal notranslate"><span class="pre">batch_system</span></code> defines which submission method is used for scheduling
+your tasks when using <code class="docutils literal notranslate"><span class="pre">batch=True</span></code> or <code class="docutils literal notranslate"><span class="pre">--batch</span></code>.
+In most cases, you set your <code class="docutils literal notranslate"><span class="pre">batch_system</span></code> globally (e.g. in a <code class="docutils literal notranslate"><span class="pre">settings.json</span></code>)
+file and start all your tasks with <code class="docutils literal notranslate"><span class="pre">--batch</span></code> or <code class="docutils literal notranslate"><span class="pre">batch=True</span></code>.
+If you want a single task to run only locally (e.g. because of constraints in
+the batch farm) you can set the <code class="docutils literal notranslate"><span class="pre">batch_system</span></code> only for this job by adding a member to this task:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyLocalTask</span><span class="p">(</span><span class="n">b2luigi</span><span class="o">.</span><span class="n">Task</span><span class="p">):</span>
+    <span class="n">batch_system</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how-do-i-handle-parameter-values-which-include-or-other-unusual-characters">
+<h2>How do I handle parameter values which include “/” (or other unusual characters)?<a class="headerlink" href="#how-do-i-handle-parameter-values-which-include-or-other-unusual-characters" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> automatically generates the filenames for your output or log files out of
+the current tasks values in the form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">result</span><span class="o">-</span><span class="n">path</span><span class="o">&gt;/</span><span class="n">param1</span><span class="o">=</span><span class="n">value1</span><span class="o">/</span><span class="n">param2</span><span class="o">=</span><span class="n">value2</span><span class="o">/..../</span><span class="n">filename</span><span class="o">.</span><span class="n">ext</span>
+</pre></div>
+</div>
+<p>The values are given by the serialisation of your parameter, which is basically its string representation.
+Sometimes, this representation may include characters not suitable for their usage as a path name,
+e.g. “/”.
+Especially when you use a <code class="xref py py-obj docutils literal notranslate"><span class="pre">DictParameter</span></code> or a <code class="xref py py-obj docutils literal notranslate"><span class="pre">ListParameter</span></code>, you might not
+want to have its value in your output.
+Also, if you have credentials in the parameter (what you should never do of course!), you do not
+want to show them to everyone.</p>
+<p>When using a parameter in <cite>b2luigi</cite> (or any of its derivatives), they have a new flag called <code class="docutils literal notranslate"><span class="pre">hashed</span></code>
+in their constructor, which makes the path creation only using a hashed version of your parameter value.</p>
+<p>For example will this task:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">b2luigi</span><span class="o">.</span><span class="n">Task</span><span class="p">):</span>
+    <span class="n">my_parameter</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">ListParameter</span><span class="p">(</span><span class="n">hashed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">b2luigi</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">MyTask</span><span class="p">(</span><span class="n">my_parameter</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Some&quot;</span><span class="p">,</span> <span class="s2">&quot;strange&quot;</span><span class="p">,</span> <span class="s2">&quot;items&quot;</span><span class="p">,</span> <span class="s2">&quot;with&quot;</span><span class="p">,</span> <span class="s2">&quot;bad / signs&quot;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>create a file called <code class="docutils literal notranslate"><span class="pre">my_parameter=hashed_08928069d368e4a0f8ac02a0193e443b/test.txt</span></code> in your output folder
+instead of using the list value.</p>
+</div>
+<div class="section" id="what-does-the-valueerror-the-task-id-task-task-id-to-be-executed-mean">
+<h2>What does the ValueError “The task id {task.task_id} to be executed…” mean?<a class="headerlink" href="#what-does-the-valueerror-the-task-id-task-task-id-to-be-executed-mean" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>ValueError</cite> exception <cite>The task id &lt;task_id&gt; to be executed by this batch worker does
+not exist in the locally reproduced task graph.</cite> is thrown by <code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> batch workers if
+the task that should have been executed by this batch worker does not exist in the task
+graph reproduced by the batch worker. This means that the task graph produced by the initial
+<code class="docutils literal notranslate"><span class="pre">b2luigi.process</span></code> call and the one reproduced in the batch job differ from each other.
+This can be caused by a non-deterministic behavior of your dependency graph generation, such
+as a random task parameter.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="development.html" class="btn btn-neutral float-right" title="Development and TODOs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../documentation/run_modes.html" class="btn btn-neutral float-left" title="Run Modes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Nils Braun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

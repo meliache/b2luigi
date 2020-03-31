@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Belle II specific examples &mdash; b2luigi 0.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Documentation" href="../documentation/api.html" />
+    <link rel="prev" title="Batch Processing" href="../usage/batch.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> b2luigi
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/batch.html">Batch Processing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Belle II specific examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-at-the-naf">Running at the NAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-at-kekcc">Running at KEKCC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ntuple-generation">nTuple Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#standard-simulation-reconstruction-and-some-ntuple-generation">Standard Simulation, Reconstruction and some nTuple Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/run_modes.html">Run Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development and TODOs</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">b2luigi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Belle II specific examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/advanced/basf2-examples.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="belle-ii-specific-examples">
+<span id="basf2-example-label"></span><h1>Belle II specific examples<a class="headerlink" href="#belle-ii-specific-examples" title="Permalink to this headline">¶</a></h1>
+<p>The following examples are not of interest to the general audience, but only for basf2 users.</p>
+<div class="section" id="running-at-the-naf">
+<h2>Running at the NAF<a class="headerlink" href="#running-at-the-naf" title="Permalink to this headline">¶</a></h2>
+<p>The environment on the workers is different than on the scheduling machine, so we can not
+just copy the environment variables as on KEKCC.</p>
+<p>You can use setup script (e.g. called <code class="docutils literal notranslate"><span class="pre">setup_basf2.sh</span></code>) with the following content</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> /cvmfs/belle.cern.ch/tools/b2setup release-XX-XX-XX
+</pre></div>
+</div>
+<p>All you have to do is specify the setup script as the <code class="docutils literal notranslate"><span class="pre">env_script</span></code> setting and also set the
+executable explicitly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">b2luigi</span>
+
+
+<span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">b2luigi</span><span class="o">.</span><span class="n">Task</span><span class="p">):</span>
+    <span class="n">parameter</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">IntParameter</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Wrapper</span><span class="p">(</span><span class="n">b2luigi</span><span class="o">.</span><span class="n">Task</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">requires</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">MyTask</span><span class="p">(</span><span class="n">parameter</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># Choose htcondor as our batch system</span>
+    <span class="n">b2luigi</span><span class="o">.</span><span class="n">set_setting</span><span class="p">(</span><span class="s2">&quot;batch_system&quot;</span><span class="p">,</span> <span class="s2">&quot;htcondor&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Setup the correct environment on the workers</span>
+    <span class="n">b2luigi</span><span class="o">.</span><span class="n">set_setting</span><span class="p">(</span><span class="s2">&quot;env_script&quot;</span><span class="p">,</span> <span class="s2">&quot;setup_basf2.sh&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Most likely your executable from the submission node is not the same on</span>
+    <span class="c1"># the worker node, so specify it explicitly</span>
+    <span class="n">b2luigi</span><span class="o">.</span><span class="n">set_setting</span><span class="p">(</span><span class="s2">&quot;executable&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;python3&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Where to store the results</span>
+    <span class="n">b2luigi</span><span class="o">.</span><span class="n">set_setting</span><span class="p">(</span><span class="s2">&quot;result_dir&quot;</span><span class="p">,</span> <span class="s2">&quot;results&quot;</span><span class="p">)</span>
+
+    <span class="n">b2luigi</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">Wrapper</span><span class="p">(),</span> <span class="n">batch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Of course it is also possible to set those settings in the <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> or as task-specific parameters.
+Please check out <a class="reference internal" href="../documentation/api.html#b2luigi.get_setting" title="b2luigi.get_setting"><code class="xref py py-func docutils literal notranslate"><span class="pre">b2luigi.get_setting()</span></code></a> for more information.</p>
+<p>Please note that the called script as well as the results folder need to be accessible from both
+the scheduler and the worker machines.
+If needed, you can also include more setup steps in the source script.</p>
+</div>
+<div class="section" id="running-at-kekcc">
+<h2>Running at KEKCC<a class="headerlink" href="#running-at-kekcc" title="Permalink to this headline">¶</a></h2>
+<p>KEKCC uses LSF as the batch system. As this is the default for <code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> there is
+nothing you need to do.</p>
+</div>
+<div class="section" id="ntuple-generation">
+<h2>nTuple Generation<a class="headerlink" href="#ntuple-generation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">b2luigi</span> <span class="k">as</span> <span class="nn">luigi</span>
+<span class="kn">from</span> <span class="nn">b2luigi.basf2_helper</span> <span class="kn">import</span> <span class="n">Basf2PathTask</span><span class="p">,</span> <span class="n">Basf2nTupleMergeTask</span>
+
+<span class="kn">import</span> <span class="nn">basf2</span>
+
+<span class="kn">import</span> <span class="nn">modularAnalysis</span>
+
+
+<span class="k">class</span> <span class="nc">AnalysisTask</span><span class="p">(</span><span class="n">Basf2PathTask</span><span class="p">):</span>
+    <span class="n">experiment_number</span> <span class="o">=</span> <span class="n">luigi</span><span class="o">.</span><span class="n">IntParameter</span><span class="p">()</span>
+    <span class="n">run_number</span> <span class="o">=</span> <span class="n">luigi</span><span class="o">.</span><span class="n">IntParameter</span><span class="p">()</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">()</span>
+    <span class="n">file_number</span> <span class="o">=</span> <span class="n">luigi</span><span class="o">.</span><span class="n">IntParameter</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Define the outputs here</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;D_n_tuple.root&quot;</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;B_n_tuple.root&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">create_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># somehow create filenames from parameters</span>
+        <span class="c1"># self.experiment_number, self.run_number,</span>
+        <span class="c1"># self.mode and self.file_number</span>
+        <span class="c1"># (parameters just examples)</span>
+        <span class="n">input_file_names</span> <span class="o">=</span> <span class="o">..</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">basf2</span><span class="o">.</span><span class="n">create_path</span><span class="p">()</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">inputMdstList</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">input_file_names</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># Now fill your particle lists, just examples</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">fillParticleLists</span><span class="p">([(</span><span class="s1">&#39;K+&#39;</span><span class="p">,</span> <span class="s1">&#39;kaonID &gt; 0.1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;pi+&#39;</span><span class="p">,</span> <span class="s1">&#39;pionID &gt; 0.1&#39;</span><span class="p">)],</span>
+                                          <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">reconstructDecay</span><span class="p">(</span><span class="s1">&#39;D0 -&gt; K- pi+&#39;</span><span class="p">,</span> <span class="s1">&#39;1.7 &lt; M &lt; 1.9&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">fitVertex</span><span class="p">(</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">matchMCTruth</span><span class="p">(</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">reconstructDecay</span><span class="p">(</span><span class="s1">&#39;B- -&gt; D0 pi-&#39;</span><span class="p">,</span> <span class="s1">&#39;5.2 &lt; Mbc &lt; 5.3&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">fitVertex</span><span class="p">(</span><span class="s1">&#39;B+&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">matchMCTruth</span><span class="p">(</span><span class="s1">&#39;B-&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># When exporting, use the function get_output_file_name()</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">variablesToNtuple</span><span class="p">(</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span>
+                                        <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;useCMSFrame(p)&#39;</span><span class="p">,</span> <span class="s1">&#39;useCMSFrame(E)&#39;</span><span class="p">,</span>
+                                        <span class="s1">&#39;daughter(0, kaonID)&#39;</span><span class="p">,</span> <span class="s1">&#39;daughter(1, pionID)&#39;</span><span class="p">,</span> <span class="s1">&#39;isSignal&#39;</span><span class="p">,</span> <span class="s1">&#39;mcErrors&#39;</span><span class="p">],</span>
+                                        <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s2">&quot;D_n_tuple.root&quot;</span><span class="p">),</span>
+                                        <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">variablesToNtuple</span><span class="p">(</span><span class="s1">&#39;B-&#39;</span><span class="p">,</span>
+                                        <span class="p">[</span><span class="s1">&#39;Mbc&#39;</span><span class="p">,</span> <span class="s1">&#39;deltaE&#39;</span><span class="p">,</span> <span class="s1">&#39;isSignal&#39;</span><span class="p">,</span> <span class="s1">&#39;mcErrors&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">],</span>
+                                        <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s2">&quot;B_n_tuple.root&quot;</span><span class="p">),</span>
+                                        <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span>
+
+
+<span class="k">class</span> <span class="nc">MasterTask</span><span class="p">(</span><span class="n">luigi</span><span class="o">.</span><span class="n">WrapperTask</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">requires</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># somehow loop over the runs, experiment etc.</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">AnalysisTask</span><span class="p">,</span> <span class="n">experiment_number</span><span class="o">=...</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">luigi</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">MasterTask</span><span class="p">(),</span> <span class="n">workers</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="standard-simulation-reconstruction-and-some-ntuple-generation">
+<h2>Standard Simulation, Reconstruction and some nTuple Generation<a class="headerlink" href="#standard-simulation-reconstruction-and-some-ntuple-generation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">b2luigi</span> <span class="k">as</span> <span class="nn">luigi</span>
+<span class="kn">from</span> <span class="nn">b2luigi.basf2_helper</span> <span class="kn">import</span> <span class="n">Basf2PathTask</span><span class="p">,</span> <span class="n">Basf2nTupleMergeTask</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">import</span> <span class="nn">basf2</span>
+
+<span class="kn">import</span> <span class="nn">modularAnalysis</span>
+<span class="kn">import</span> <span class="nn">simulation</span>
+<span class="kn">import</span> <span class="nn">generators</span>
+<span class="kn">import</span> <span class="nn">reconstruction</span>
+<span class="kn">from</span> <span class="nn">ROOT</span> <span class="kn">import</span> <span class="n">Belle2</span>
+
+
+<span class="k">class</span> <span class="nc">SimulationType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">y4s</span> <span class="o">=</span> <span class="s2">&quot;Y(4S)&quot;</span>
+    <span class="n">continuum</span> <span class="o">=</span> <span class="s2">&quot;Continuum&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">SimulationTask</span><span class="p">(</span><span class="n">Basf2PathTask</span><span class="p">):</span>
+    <span class="n">n_events</span> <span class="o">=</span> <span class="n">luigi</span><span class="o">.</span><span class="n">IntParameter</span><span class="p">()</span>
+    <span class="n">event_type</span> <span class="o">=</span> <span class="n">luigi</span><span class="o">.</span><span class="n">EnumParameter</span><span class="p">(</span><span class="n">enum</span><span class="o">=</span><span class="n">SimulationType</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">create_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">basf2</span><span class="o">.</span><span class="n">create_path</span><span class="p">()</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">setupEventInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_events</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">SimulationType</span><span class="o">.</span><span class="n">y4s</span><span class="p">:</span>
+            <span class="n">dec_file</span> <span class="o">=</span> <span class="n">Belle2</span><span class="o">.</span><span class="n">FileSystem</span><span class="o">.</span><span class="n">findFile</span><span class="p">(</span><span class="s1">&#39;analysis/examples/tutorials/B2A101-Y4SEventGeneration.dec&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">SimulationType</span><span class="o">.</span><span class="n">continuum</span><span class="p">:</span>
+            <span class="n">dec_file</span> <span class="o">=</span> <span class="n">Belle2</span><span class="o">.</span><span class="n">FileSystem</span><span class="o">.</span><span class="n">findFile</span><span class="p">(</span><span class="s1">&#39;analysis/examples/simulations/B2A102-ccbarEventGeneration.dec&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">event_type</span><span class="si">}</span><span class="s2"> is not valid. It should be either &#39;Y(4S)&#39; or &#39;Continuum&#39;!&quot;</span><span class="p">)</span>
+
+        <span class="n">generators</span><span class="o">.</span><span class="n">add_evtgen_generator</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;signal&#39;</span><span class="p">,</span> <span class="n">dec_file</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">loadGearbox</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">simulation</span><span class="o">.</span><span class="n">add_simulation</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="n">path</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;RootOutput&#39;</span><span class="p">,</span> <span class="n">outputFileName</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s1">&#39;simulation_full_output.root&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">path</span>
+
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;simulation_full_output.root&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@luigi</span><span class="o">.</span><span class="n">requires</span><span class="p">(</span><span class="n">SimulationTask</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ReconstructionTask</span><span class="p">(</span><span class="n">Basf2PathTask</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">basf2</span><span class="o">.</span><span class="n">create_path</span><span class="p">()</span>
+
+        <span class="n">path</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;RootInput&#39;</span><span class="p">,</span> <span class="n">inputFileNames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_input_file_names</span><span class="p">(</span><span class="s2">&quot;simulation_full_output.root&quot;</span><span class="p">))</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">loadGearbox</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">reconstruction</span><span class="o">.</span><span class="n">add_reconstruction</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">outputMdst</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s2">&quot;reconstructed_output.root&quot;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">path</span>
+
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;reconstructed_output.root&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@luigi</span><span class="o">.</span><span class="n">requires</span><span class="p">(</span><span class="n">ReconstructionTask</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">AnalysisTask</span><span class="p">(</span><span class="n">Basf2PathTask</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">basf2</span><span class="o">.</span><span class="n">create_path</span><span class="p">()</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">inputMdstList</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_file_names</span><span class="p">(</span><span class="s2">&quot;reconstructed_output.root&quot;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">fillParticleLists</span><span class="p">([(</span><span class="s1">&#39;K+&#39;</span><span class="p">,</span> <span class="s1">&#39;kaonID &gt; 0.1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;pi+&#39;</span><span class="p">,</span> <span class="s1">&#39;pionID &gt; 0.1&#39;</span><span class="p">)],</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">reconstructDecay</span><span class="p">(</span><span class="s1">&#39;D0 -&gt; K- pi+&#39;</span><span class="p">,</span> <span class="s1">&#39;1.7 &lt; M &lt; 1.9&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">fitVertex</span><span class="p">(</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">matchMCTruth</span><span class="p">(</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">reconstructDecay</span><span class="p">(</span><span class="s1">&#39;B- -&gt; D0 pi-&#39;</span><span class="p">,</span> <span class="s1">&#39;5.2 &lt; Mbc &lt; 5.3&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">fitVertex</span><span class="p">(</span><span class="s1">&#39;B+&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">matchMCTruth</span><span class="p">(</span><span class="s1">&#39;B-&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">variablesToNtuple</span><span class="p">(</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span>
+                                          <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;useCMSFrame(p)&#39;</span><span class="p">,</span> <span class="s1">&#39;useCMSFrame(E)&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;daughter(0, kaonID)&#39;</span><span class="p">,</span> <span class="s1">&#39;daughter(1, pionID)&#39;</span><span class="p">,</span> <span class="s1">&#39;isSignal&#39;</span><span class="p">,</span> <span class="s1">&#39;mcErrors&#39;</span><span class="p">],</span>
+                                          <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s2">&quot;D_n_tuple.root&quot;</span><span class="p">),</span>
+                                          <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">modularAnalysis</span><span class="o">.</span><span class="n">variablesToNtuple</span><span class="p">(</span><span class="s1">&#39;B-&#39;</span><span class="p">,</span>
+                                          <span class="p">[</span><span class="s1">&#39;Mbc&#39;</span><span class="p">,</span> <span class="s1">&#39;deltaE&#39;</span><span class="p">,</span> <span class="s1">&#39;isSignal&#39;</span><span class="p">,</span> <span class="s1">&#39;mcErrors&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">],</span>
+                                          <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_output_file_name</span><span class="p">(</span><span class="s2">&quot;B_n_tuple.root&quot;</span><span class="p">),</span>
+                                          <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span>
+
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;D_n_tuple.root&quot;</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;B_n_tuple.root&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">MasterTask</span><span class="p">(</span><span class="n">Basf2nTupleMergeTask</span><span class="p">):</span>
+    <span class="n">n_events</span> <span class="o">=</span> <span class="n">luigi</span><span class="o">.</span><span class="n">IntParameter</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">requires</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">event_type</span> <span class="ow">in</span> <span class="n">SimulationType</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">AnalysisTask</span><span class="p">,</span> <span class="n">event_type</span><span class="o">=</span><span class="n">event_type</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">luigi</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">MasterTask</span><span class="p">(</span><span class="n">n_events</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../documentation/api.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../usage/batch.html" class="btn btn-neutral float-left" title="Batch Processing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Nils Braun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

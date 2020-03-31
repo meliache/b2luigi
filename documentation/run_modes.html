@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Run Modes &mdash; b2luigi 0.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FAQ" href="../advanced/faq.html" />
+    <link rel="prev" title="b2luigi.basf2_helper package" href="b2luigi.basf2_helper.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> b2luigi
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/batch.html">Batch Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/basf2-examples.html">Belle II specific examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Run Modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#start-a-central-scheduler">Start a Central Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/development.html">Development and TODOs</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">b2luigi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Run Modes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/documentation/run_modes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="run-modes">
+<span id="run-modes-label"></span><h1>Run Modes<a class="headerlink" href="#run-modes" title="Permalink to this headline">¶</a></h1>
+<p>The run mode can be chosen by calling your python file with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python file.py --mode
+</pre></div>
+</div>
+<p>or by calling <code class="docutils literal notranslate"><span class="pre">b2luigi.process</span></code> with a given mode set to <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">b2luigi</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="o">..</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where mode can be one of:</p>
+<ul class="simple">
+<li><p><strong>batch</strong>: Run the tasks on a batch system, as described in <a class="reference internal" href="../usage/quickstart.html#quick-start-label"><span class="std std-ref">Quick Start</span></a>. The maximal number of
+batch jobs to run in parallel (jobs in flight) is equal to the number of workers.
+This is 1 by default, so you probably want to change this.
+By default, LSF is used as a batch system. If you want to change this, set the corresponding <code class="docutils literal notranslate"><span class="pre">batch_system</span></code>
+(see <a class="reference internal" href="../usage/batch.html#batch-label"><span class="std std-ref">Batch Processing</span></a>) to one of the supported systems.</p></li>
+<li><p><strong>dry-run</strong>: Similar to the dry-run funtionality of <code class="docutils literal notranslate"><span class="pre">luigi</span></code>, this will not start any tasks but just tell
+you, which tasks it would run. The exit code is 1 in case a task needs to run and 0 otherwise.</p></li>
+<li><p><strong>show-output</strong>: List all output files that this has produced/will produce. Files which already exist
+(where the targets define, what exists mean in this case) are marked as green whereas missing targets are
+marked red.</p></li>
+<li><p><strong>test</strong>: Run the tasks normally (no batch submission), but turn on debug logging of <code class="docutils literal notranslate"><span class="pre">luigi</span></code>. Also,
+do not dispatch any task (if requested) and print the output to the console instead of in log files.</p></li>
+</ul>
+<p>Additional console arguments:</p>
+<ul class="simple">
+<li><p><strong>–scheduler-host</strong> and <strong>–scheduler-port</strong>: If you have set up a central scheduler, you can pass this information
+here easily. This works for batch or non-batch submission but is turned of for the test mode.</p></li>
+</ul>
+<div class="section" id="start-a-central-scheduler">
+<h2>Start a Central Scheduler<a class="headerlink" href="#start-a-central-scheduler" title="Permalink to this headline">¶</a></h2>
+<p>When the number of tasks grows, it is sometimes hard to keep track of all of them (despite the summary in the end).
+For this, <code class="docutils literal notranslate"><span class="pre">luigi</span></code> (the parent project of <code class="docutils literal notranslate"><span class="pre">b2luigi</span></code>) brings a nice visualisation and scheduling tool called the central scheduler.</p>
+<p>To start this you need to call the <code class="docutils literal notranslate"><span class="pre">luigid</span></code> executable.
+Where to find this depends on your installation type:</p>
+<ol class="loweralpha">
+<li><p>If you have a installed <code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> without user flag, you can just call the executable as it is already in your path:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>luigid --port PORT
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>If you have a local installation, luigid is installed into your home directory:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>~/.local/bin/luigid --port PORT
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>The default port is 8082, but you can choose any non-occupied port.</p>
+<p>The central scheduler will register the tasks you want to process and keep track of which tasks are already done.</p>
+<p>To use this scheduler, call <code class="docutils literal notranslate"><span class="pre">b2luigi</span></code> by giving the connection details:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python simple-task.py <span class="o">[</span>--batch<span class="o">]</span> --scheduler-host HOST --scheduler-port PORT
+</pre></div>
+</div>
+<p>which works for batch as well as non-batch jobs.
+You can now visit the url <a class="reference external" href="http://HOST:PORT">http://HOST:PORT</a> with your browser and see a nice summary of the current progress
+of your tasks.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../advanced/faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="b2luigi.basf2_helper.html" class="btn btn-neutral float-left" title="b2luigi.basf2_helper package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Nils Braun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

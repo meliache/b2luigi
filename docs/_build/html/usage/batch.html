@@ -456,6 +456,17 @@ For an overview of possible settings refer to the
 <p>Batch process for working with gbasf2 projects on grid.</p>
 <p>A BatchProcess job corresponds to a whole project in gbasf2.  The task of
 creating and managing jobs in a project is left to gbasf2.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<ul class="simple">
+<li><p>The gbasf2 batch process for luigi can only be used for tasks
+inhereting from <code class="docutils literal notranslate"><span class="pre">Basf2PathTask</span></code> or other tasks with a
+<code class="docutils literal notranslate"><span class="pre">create_path()</span></code> method that returns a basf2 path.</p></li>
+<li><p>It can only be used for pickable/serializable basf2 paths, as it stores
+the path created by <code class="docutils literal notranslate"><span class="pre">create_path</span></code> in a python pickle file and runs that on the grid.</p></li>
+<li><p>That means that aliases are, at least of now, not supported</p></li>
+</ul>
+</div>
 <p>Example file to execute analysis path created in
 <code class="docutils literal notranslate"><span class="pre">examples/gbasf2/example_mdst_analysis</span></code> on grid via gbasf2:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
@@ -575,9 +586,9 @@ creating and managing jobs in a project is left to gbasf2.</p>
                                             <span class="s2">&quot;r00000/mixed/mdst/sub00/mdst_000255_prod00009434_task10020000255.root&quot;</span><span class="p">)</span>
         <span class="n">max_event</span> <span class="o">=</span> <span class="mi">100</span>
         <span class="c1"># create two analysis task for two different MBC cuts. Each will be its own gbasf2 project</span>
-        <span class="k">for</span> <span class="n">mbc_lower_cut</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">mbc_lower_cut</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">5.15</span><span class="p">]:</span>
             <span class="n">mbc_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">mbc_lower_cut</span><span class="p">,</span> <span class="mf">5.3</span><span class="p">)</span>
-            <span class="n">parameter_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_event</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mbc_range</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">gbasf2_input_dataset</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+            <span class="n">parameter_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_event</span><span class="si">}{</span><span class="n">mbc_range</span><span class="si">}{</span><span class="n">gbasf2_input_dataset</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
             <span class="n">unique_project_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;luigiExample</span><span class="si">{</span><span class="n">parameter_hash</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">yield</span> <span class="n">MyAnalysisTask</span><span class="p">(</span>
                 <span class="n">mbc_range</span><span class="o">=</span><span class="n">mbc_range</span><span class="p">,</span>

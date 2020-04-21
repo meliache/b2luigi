@@ -453,12 +453,12 @@ For an overview of possible settings refer to the
 <dt id="b2luigi.batch.processes.gbasf2.Gbasf2Process">
 <em class="property">class </em><code class="sig-prename descclassname">b2luigi.batch.processes.gbasf2.</code><code class="sig-name descname">Gbasf2Process</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.batch.processes.gbasf2.Gbasf2Process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#b2luigi.batch.processes.BatchProcess" title="b2luigi.batch.processes.BatchProcess"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.batch.processes.BatchProcess</span></code></a></p>
-<p>Batch process for working with gbasf2 projects on grid.</p>
+<p>Batch process for working with gbasf2 projects on <em>LHC Computing Grid</em> (LCG).</p>
 <p><strong>What it does</strong></p>
 <dl class="simple">
 <dt>gbasf2 project submission</dt><dd><p>The gbasf2 batch process takes the basf2 path returned by the <code class="docutils literal notranslate"><span class="pre">create_path()</span></code>
 method of the task, saves it to the disk and creates a wrapper steering file that
-executes the saved path. It then sends both to the LHC Computing Grid (LCG) via
+executes the saved path. It then sends both to the LCG via
 the BelleII-specific Dirac-wrapper gbasf2.</p>
 </dd>
 <dt>Project status monitoring</dt><dd><p>After the project submission, the gbasf batch process regularly checks the status
@@ -483,6 +483,54 @@ the path created by <code class="docutils literal notranslate"><span class="pre"
 </div>
 <p><strong>Usage</strong></p>
 <dl>
+<dt>Settings for gbasf2 tasks</dt><dd><blockquote>
+<div><p>To submit a task with the gbasf2 wrapper, you first you have to add the property
+<code class="docutils literal notranslate"><span class="pre">batch_system</span> <span class="pre">=</span> <span class="pre">&quot;gbasf2&quot;</span></code>, which sets the <code class="docutils literal notranslate"><span class="pre">batch_system</span></code> setting.
+It is not recommended to set that setting globally, as not all tasks can be submitted to the grid,
+but only tasks with a <code class="docutils literal notranslate"><span class="pre">create_path</span></code> method.</p>
+<p>For gbasf2 tasks it is further required to set the settings</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_input_dataset</span></code>: The input dataset on the grid to use.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_project_name_prefix</span></code>: A string with which your gbasf2 project names will start.
+To ensure the project associate with each unique task (i.e. for each of luigi parameters)
+is unique, a hash generated from the luigi parameters of the task will be appended to the prefix
+to create the actual gbasf2 project name.</p></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">Basf2PathTask</span><span class="p">):</span>
+    <span class="n">batch_system</span> <span class="o">=</span> <span class="s2">&quot;gbasf2&quot;</span>
+    <span class="n">gbasf2_project_name_prefix</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">significant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">gbasf2_input_dataset</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">hashed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following settings are not required as they have default values, but those might not work for you:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_install_directory</span></code>: If your gbasf2 install location is not <code class="docutils literal notranslate"><span class="pre">~/gbasf2KEK</span></code>, you have set this,
+so that the gbasf2 batch process can set up the gbasf2 environment for its gbasf2 commands.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_download_directory</span></code>: Defines in which directory the <code class="docutils literal notranslate"><span class="pre">gb2_ds_get</span></code> download will called
+to download the result dataset.
+The output will then be in the in a subdirectory of that directory with the name of the project.
+It defaults to the current directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_release</span></code>: Set this if you want the jobs to use another release on the grid than your
+currently set up release, which is the default.</p></li>
+</ul>
+<p>By setting <code class="docutils literal notranslate"><span class="pre">gbasf2_print_status_updates</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code> you can turn off the printing of of the job summaries,
+that is the number of jobs in different states in a gbasf2 project.</p>
+<p>The following optional settings correspond to the equally named <code class="docutils literal notranslate"><span class="pre">gbasf</span></code> command line options
+(without the <code class="docutils literal notranslate"><span class="pre">gbasf_</span></code> prefix) that you can set to customize your gbasf2 project:</p>
+<p><code class="docutils literal notranslate"><span class="pre">gbasf2_additional_files</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gbasf2_n_repition_job</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gbasf2_force_submission</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gbasf2_cputime</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gbasf2_evtpersec</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gbasf2_priority</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gbasf2_jobtype</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gbasf2_basf2opt</span></code></p>
+</div></blockquote>
+<p>It is further possible to append arbitrary command line arguments to the <code class="docutils literal notranslate"><span class="pre">gbasf2</span></code> submission command
+with the <code class="docutils literal notranslate"><span class="pre">gbasf2_additional_params</span></code> setting.
+If you want to blacklist a grid site, you can e.g. add</p>
+</dd>
 <dt>Example</dt><dd><p>Here is an example file to submit an analysis path created by the script in
 <code class="docutils literal notranslate"><span class="pre">examples/gbasf2/example_mdst_analysis</span></code> to grid via gbasf2:</p>
 <div class="literal-block-wrapper docutils container" id="id1">

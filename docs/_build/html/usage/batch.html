@@ -656,11 +656,14 @@ If you want to blacklist a grid site, you can e.g. add</p>
 </div>
 </dd>
 <dt>Handling failed jobs</dt><dd><p>The gbasf2 input wrapper considers the gbasf2 project as failed if any of
-the jobs in the project failed.  It the automatically downloads the logs, so
-please look into them to see what the reason was. You then need to resubmit them
-manually with the <code class="docutils literal notranslate"><span class="pre">gb2_job_reschedule</span></code> or delete them with
+the jobs in the project failed and reached the maximum number of retries.
+It the automatically downloads the logs, so please look into them to see what the reason was.
+For example, it can be that only certain grid sites were affected, so you might want to exclude them
+by adding the <code class="docutils literal notranslate"><span class="pre">&quot;--banned_site</span> <span class="pre">...</span></code> to <code class="docutils literal notranslate"><span class="pre">gbasf2_additional_params</span></code>.</p>
+<p>You also always reschedule jobs manually with the <code class="docutils literal notranslate"><span class="pre">gb2_job_reschedule</span></code> command or delete them with
 <code class="docutils literal notranslate"><span class="pre">gb2_job_delete</span></code> so that the gbasf2 batch process doesn’t know they ever
-existed. Then run just run your luigi task/script again.</p>
+existed. Then run just run your luigi task/script again and it will start monitoring the running project
+again.</p>
 </dd>
 </dl>
 <div class="admonition note">

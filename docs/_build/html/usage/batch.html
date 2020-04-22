@@ -463,10 +463,19 @@ the BelleII-specific Dirac-wrapper gbasf2.</p>
 </dd>
 <dt>Project status monitoring</dt><dd><p>After the project submission, the gbasf batch process regularly checks the status
 of all the jobs belonging to a gbasf2 project returns a success if
-all jobs had been successful, while a single failed job results in a failed project.</p>
+all jobs had been successful, while a single failed job results in a failed project.
+You can close a running b2luigi process and then start your script again and if a
+task with the same project name is running, this b2luigi gbasf2 wrapper will recognize that
+and instead of resubmitting a new project, continue monitoring the running project.</p>
 </dd>
 <dt>Download of datasets and logs</dt><dd><p>If all jobs had been successful, it automatically downloads the output dataset and
-the log files from the job sandboxes.</p>
+the log files from the job sandboxes and automatically checks if the download was successful
+before moving the data to the final location.</p>
+</dd>
+<dt>Automatic rescheduling of failed jobs (experimental)</dt><dd><p>Whenever a job fails, gbasf2 reschedules it as long as the number of retries is below the
+value of the setting <code class="docutils literal notranslate"><span class="pre">gbasf2_max_retries</span></code>. It keeps track of the number of retries in a
+local file, so that it does not change if you close b2luigi and start it again. Of course it
+does not persist if you remove that file or move to a different machine.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -479,6 +488,12 @@ inhereting from <code class="docutils literal notranslate"><span class="pre">Bas
 <li><p>It can only be used for pickable/serializable basf2 paths, as it stores
 the path created by <code class="docutils literal notranslate"><span class="pre">create_path</span></code> in a python pickle file and runs that on the grid.</p></li>
 <li><p>basf2 variable aliases are at the moment not supported, as they are not included in the pickled path</p></li>
+<li><p>Changing the batch to gbasf2 means you also have to adapt the output function of your task, because the
+output will not be a single root file anymore, but a collection of root files,
+one for each file in the input data set, in the directory given by the setting <code class="docutils literal notranslate"><span class="pre">gbasf2_output_directory</span></code>.
+You should use this directory as the required output, as it is difficult to predict what the output
+files will be named. The luigi gbasf2 wrapperdoesn’t merge the files and lets the user decide how he wants to
+handle them.</p></li>
 </ul>
 </div>
 <p><strong>Usage</strong></p>
@@ -503,19 +518,21 @@ to create the actual gbasf2 project name.</p></li>
     <span class="n">gbasf2_input_dataset</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">hashed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The following settings are not required as they have default values, but those might not work for you:</p>
+<p>The following settings are not required as they have default values, but they are still important enough
+to be explained here:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_install_directory</span></code>: If your gbasf2 install location is not <code class="docutils literal notranslate"><span class="pre">~/gbasf2KEK</span></code>, you have set this,
-so that the gbasf2 batch process can set up the gbasf2 environment for its gbasf2 commands.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_download_directory</span></code>: Defines in which directory the <code class="docutils literal notranslate"><span class="pre">gb2_ds_get</span></code> download will called
-to download the result dataset.
-The output will then be in the in a subdirectory of that directory with the name of the project.
-It defaults to the current directory.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_release</span></code>: Set this if you want the jobs to use another release on the grid than your
-currently set up release, which is the default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_install_directory</span></code>: Defaults to <code class="docutils literal notranslate"><span class="pre">~/gbasf2KEK</span></code>. If you installed gbasf2 into another
+location, you have to change that setting accordingly.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_output_directory</span></code>: Directory into which the outputs of the gbasf2 grid project will be moved
+if the the dataset download via <code class="docutils literal notranslate"><span class="pre">gb2_ds_get</span></code> had been successful. It defaults to the value that you
+get from running <code class="docutils literal notranslate"><span class="pre">task.get_output_file_name()</span></code> on the <code class="docutils literal notranslate"><span class="pre">gbasf2_project_name_prefix</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_release</span></code>: Defaults to the release of your currently set up basf2 release.
+Set this if you want the jobs to use another release on the grid.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_print_status_updates</span></code>: Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>. By setting it to <code class="docutils literal notranslate"><span class="pre">False</span></code> you can turn off the
+printing of of the job summaries, that is the number of jobs in different states in a gbasf2 project.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_max_retries</span></code>: Default to 0. Maximum number of times that each job in the project can be automatically
+rescheduled until the project is declared as failed.</p></li>
 </ul>
-<p>By setting <code class="docutils literal notranslate"><span class="pre">gbasf2_print_status_updates</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code> you can turn off the printing of of the job summaries,
-that is the number of jobs in different states in a gbasf2 project.</p>
 <p>The following optional settings correspond to the equally named <code class="docutils literal notranslate"><span class="pre">gbasf</span></code> command line options
 (without the <code class="docutils literal notranslate"><span class="pre">gbasf_</span></code> prefix) that you can set to customize your gbasf2 project:</p>
 <p><code class="docutils literal notranslate"><span class="pre">gbasf2_additional_files</span></code>,
@@ -584,22 +601,8 @@ If you want to blacklist a grid site, you can e.g. add</p>
 47
 48
 49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-
-<span class="kn">import</span> <span class="nn">b2luigi</span>
+50</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">b2luigi</span>
 <span class="kn">from</span> <span class="nn">b2luigi.basf2_helper.tasks</span> <span class="kn">import</span> <span class="n">Basf2PathTask</span>
-<span class="kn">from</span> <span class="nn">b2luigi.batch.processes.gbasf2</span> <span class="kn">import</span> <span class="n">get_unique_gbasf2_project_name</span>
 <span class="kn">import</span> <span class="nn">example_mdst_analysis</span>
 
 
@@ -611,31 +614,21 @@ If you want to blacklist a grid site, you can e.g. add</p>
     <span class="n">gbasf2_project_name_prefix</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">significant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">gbasf2_input_dataset</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">hashed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="c1"># As an example we define a cut range as a b2luigi ListParameter, so that we</span>
-    <span class="c1"># can automatically create multiple tasks and thus multiple independent</span>
-    <span class="c1"># gbasf2 projects for differents sets of cuts</span>
+    <span class="c1"># Example luigi cut parameter to facilitate starting multiple projects for different cut values</span>
     <span class="n">mbc_range</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">ListParameter</span><span class="p">(</span><span class="n">hashed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">create_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">example_mdst_analysis</span><span class="o">.</span><span class="n">create_analysis_path</span><span class="p">(</span><span class="n">mbc_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mbc_range</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Define the output to be the directory into which the ``gb2_ds_get``</span>
-<span class="sd">        command, which is wrapped by the gbasf2 batch system, downloads the</span>
-<span class="sd">        dataset.  It is defined by the contatenation of the</span>
-<span class="sd">        ``gbasf2_download_dir`` and ``gbasf2_project_name`` settings.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">gbasf2_project_name</span> <span class="o">=</span> <span class="n">get_unique_gbasf2_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">gbasf2_dataset_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gbasf2_download_dir</span><span class="p">,</span> <span class="n">gbasf2_project_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">LocalTarget</span><span class="p">(</span><span class="n">gbasf2_dataset_dir</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gbasf2_project_name_prefix</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">MasterTask</span><span class="p">(</span><span class="n">b2luigi</span><span class="o">.</span><span class="n">WrapperTask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    We use the MasterTask to require multiple analyse tasks with different input</span>
-<span class="sd">    datasets and cut values.  For each parameter combination, a different gbasf2</span>
-<span class="sd">    project will be submitted.</span>
+<span class="sd">    We use the MasterTask to be able to require multiple analyse tasks with</span>
+<span class="sd">    different input datasets and cut values. For each parameter combination, a</span>
+<span class="sd">    different gbasf2 project will be submitted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">requires</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">gbasf2_input_datasets</span> <span class="o">=</span> <span class="p">[</span>
@@ -643,7 +636,7 @@ If you want to blacklist a grid site, you can e.g. add</p>
             <span class="s2">&quot;/belle/MC/release-04-00-03/DB00000757/MC13a/prod00009435/s00/e1003/4S/r00000/charged/mdst/sub00&quot;</span><span class="p">,</span>
         <span class="p">]</span>
         <span class="c1"># if you want to iterate over different cuts, just add more values to this list</span>
-        <span class="n">mbc_lower_cuts</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.15</span><span class="p">]</span>
+        <span class="n">mbc_lower_cuts</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.15</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">mbc_lower_cut</span> <span class="ow">in</span> <span class="n">mbc_lower_cuts</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">input_ds</span> <span class="ow">in</span> <span class="n">gbasf2_input_datasets</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">MyAnalysisTask</span><span class="p">(</span>
@@ -655,7 +648,9 @@ If you want to blacklist a grid site, you can e.g. add</p>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">b2luigi</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">MasterTask</span><span class="p">(),</span> <span class="n">workers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">master_task_instance</span> <span class="o">=</span> <span class="n">MasterTask</span><span class="p">()</span>
+    <span class="n">n_gbasf2_tasks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">master_task_instance</span><span class="o">.</span><span class="n">requires</span><span class="p">()))</span>
+    <span class="n">b2luigi</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">master_task_instance</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="n">n_gbasf2_tasks</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -677,12 +672,6 @@ gbasf2 projects, of which each contains multiple grid jobs, one for each file in
 dataset. The actual (sub-) job handling is left to gbasf2. So the job status of the batch process
 refers to the status of the whole project.</p>
 </div>
-<p><strong>Planned features</strong></p>
-<ul class="simple">
-<li><p>automatically reschedule failed jobs until a maximum number of retries is reached</p></li>
-<li><p>add some helper functionality to deal with output, to avoid having to redefine
-task output when switching between local batch process and gbasf2 batch process.</p></li>
-</ul>
 </dd></dl>
 
 </div>

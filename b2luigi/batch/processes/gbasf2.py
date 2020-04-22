@@ -36,10 +36,20 @@ class Gbasf2Process(BatchProcess):
         After the project submission, the gbasf batch process regularly checks the status
         of all the jobs belonging to a gbasf2 project returns a success if
         all jobs had been successful, while a single failed job results in a failed project.
+        You can close a running b2luigi process and then start your script again and if a
+        task with the same project name is running, this b2luigi gbasf2 wrapper will recognize that
+        and instead of resubmitting a new project, continue monitoring the running project.
 
     Download of datasets and logs
         If all jobs had been successful, it automatically downloads the output dataset and
-        the log files from the job sandboxes.
+        the log files from the job sandboxes and automatically checks if the download was successful
+        before moving the data to the final location.
+
+    Automatic rescheduling of failed jobs (experimental)
+        Whenever a job fails, gbasf2 reschedules it as long as the number of retries is below the
+        value of the setting ``gbasf2_max_retries``. It keeps track of the number of retries in a
+        local file, so that it does not change if you close b2luigi and start it again. Of course it
+        does not persist if you remove that file or move to a different machine.
 
 
     .. note::
@@ -51,6 +61,13 @@ class Gbasf2Process(BatchProcess):
         - It can only be used for pickable/serializable basf2 paths, as it stores
           the path created by ``create_path`` in a python pickle file and runs that on the grid.
         - basf2 variable aliases are at the moment not supported, as they are not included in the pickled path
+        - Changing the batch to gbasf2 means you also have to adapt the output function of your task, because the
+          output will not be a single root file anymore, but a collection of root files,
+          one for each file in the input data set, in the directory given by the setting ``gbasf2_output_directory``.
+          You should use this directory as the required output, as it is difficult to predict what the output
+          files will be named. The luigi gbasf2 wrapperdoesn't merge the files and lets the user decide how he wants to
+          handle them.
+
 
     **Usage**
 
@@ -77,19 +94,20 @@ class Gbasf2Process(BatchProcess):
                 gbasf2_project_name_prefix = b2luigi.Parameter(significant=False)
                 gbasf2_input_dataset = b2luigi.Parameter(hashed=True)
 
-        The following settings are not required as they have default values, but those might not work for you:
+        The following settings are not required as they have default values, but they are still important enough
+        to be explained here:
 
-        - ``gbasf2_install_directory``: If your gbasf2 install location is not ``~/gbasf2KEK``, you have set this,
-          so that the gbasf2 batch process can set up the gbasf2 environment for its gbasf2 commands.
-        - ``gbasf2_download_directory``: Defines in which directory the ``gb2_ds_get`` download will called
-          to download the result dataset.
-          The output will then be in the in a subdirectory of that directory with the name of the project.
-          It defaults to the current directory.
-        - ``gbasf2_release``: Set this if you want the jobs to use another release on the grid than your
-          currently set up release, which is the default.
-
-        By setting ``gbasf2_print_status_updates`` to ``False`` you can turn off the printing of of the job summaries,
-        that is the number of jobs in different states in a gbasf2 project.
+        - ``gbasf2_install_directory``: Defaults to ``~/gbasf2KEK``. If you installed gbasf2 into another
+          location, you have to change that setting accordingly.
+        - ``gbasf2_output_directory``: Directory into which the outputs of the gbasf2 grid project will be moved
+          if the the dataset download via ``gb2_ds_get`` had been successful. It defaults to the value that you
+          get from running ``task.get_output_file_name()`` on the ``gbasf2_project_name_prefix``.
+        - ``gbasf2_release``: Defaults to the release of your currently set up basf2 release.
+          Set this if you want the jobs to use another release on the grid.
+        - ``gbasf2_print_status_updates``: Defaults to ``True``. By setting it to ``False`` you can turn off the
+          printing of of the job summaries, that is the number of jobs in different states in a gbasf2 project.
+        - ``gbasf2_max_retries``: Default to 0. Maximum number of times that each job in the project can be automatically
+          rescheduled until the project is declared as failed.
 
         The following optional settings correspond to the equally named ``gbasf`` command line options
         (without the ``gbasf_`` prefix) that you can set to customize your gbasf2 project:
@@ -134,13 +152,6 @@ class Gbasf2Process(BatchProcess):
         gbasf2 projects, of which each contains multiple grid jobs, one for each file in the input
         dataset. The actual (sub-) job handling is left to gbasf2. So the job status of the batch process
         refers to the status of the whole project.
-
-
-    **Planned features**
-
-    - automatically reschedule failed jobs until a maximum number of retries is reached
-    - add some helper functionality to deal with output, to avoid having to redefine
-      task output when switching between local batch process and gbasf2 batch process.
     """
 
     # directory of the file in which this class is defined
@@ -166,6 +177,20 @@ class Gbasf2Process(BatchProcess):
         self.log_file_dir = get_log_file_dir(self.task)
         os.makedirs(self.log_file_dir, exist_ok=True)
 
+        # get dirac user name
+        proxy_info_str = self.setup_dirac_proxy()
+        self.dirac_user = None
+        for line in proxy_info_str.splitlines():
+            if line.startswith("username"):
+                self.dirac_user = line.split(":", 1)[1].strip()
+
+        #: Maximum number of times that each job in the project can be rescheduled until the project is declared as failed.
+        self.max_retries = get_setting("gbasf2_max_retries", default=0, task=self.task)
+
+        self.retries_file_path = os.path.join(self.log_file_dir, "n_retries_by_job.json")
+        with open(self.retries_file_path, "r") as retries_file:
+            self.n_retries_by_job = Counter(json.loads(retries_file.read()))
+
         # Store dictionary with n_jobs_by_status in attribute to check if it changed,
         # useful for printing job status on change only
         self._n_jobs_by_status = ""
@@ -175,12 +200,6 @@ class Gbasf2Process(BatchProcess):
         # ``get_job_status`` returns a success.
         self._project_had_been_successful = False
 
-        # get dirac user name
-        proxy_info_str = self.setup_dirac_proxy()
-        self.dirac_user = None
-        for line in proxy_info_str.splitlines():
-            if line.startswith("username"):
-                self.dirac_user = line.split(":", 1)[1].strip()
 
     @property
     @lru_cache(maxsize=None)
@@ -239,7 +258,6 @@ class Gbasf2Process(BatchProcess):
         return new_proxy_info_str
 
     def get_job_status(self):
-
         """
         Get overall status of the gbasf2 project.
 
@@ -312,12 +330,34 @@ class Gbasf2Process(BatchProcess):
         failed_job_dict = {job_id: job_info for job_id, job_info in job_status_dict.items()
                            if job_info["Status"] == "Failed"}
         n_failed = len(failed_job_dict)
-        print(f"{n_failed} failed jobs:\n{failed_job_dict}")
+        print(f"{n_failed} failed jobs:\n{failed_job_dict.keys()}")
 
         self._download_logs()
 
+        # reschedule failed jobs
+        for job_id, _ in failed_job_dict.items():
+            self._reschedule_job(job_id)
+
+    def _reschedule_job(self, job_id):
+        """
+        Reschedule job if the number of retries for it is below ``self.max_retries``
+        """
+        if self.n_retries_by_job[job_id] < self.max_retries:
+            print(f"Rescheduling job {job_id} (try {self.n_retries_by_job + 1}).")
+            reschedule_command = shlex.split(f"gb2_job_reschedule --jobid {job_id} --force", )
+            subprocess.run(reschedule_command, check=True, env=self.gbasf2_env)
+            self.n_retries_by_job[job_id] += 1
+            with open(self.retries_file_path, "w") as retries_file:
+                retries_file.write(json.dumps(self.n_retries_by_job))
+        elif self.n_retries_by_job[job_id] > 0:
+            # If job failed enough times that the maximum number of retries is reached, issue warning,
+            # except if max_retries is 0 and thus the number of retries is just 0
+            warnings.warn(f"Reached maximum number of rescheduling tries ({self.max_retries}) for job {job_id}.")
+
     def start_job(self):
-        """Submit new gbasf2 project to grid"""
+        """
+        Submit new gbasf2 project to grid
+        """
         if self._check_project_exists():
             warnings.warn(
                 f"\nProject with name {self.gbasf2_project_name} already exists on grid, "
@@ -335,7 +375,9 @@ class Gbasf2Process(BatchProcess):
         subprocess.run(gbasf2_command, check=True, env=self.gbasf2_env)
 
     def kill_job(self):
-        """Kill gbasf2 project"""
+        """
+        Kill gbasf2 project
+        """
         if not self._check_project_exists():
             return
         # Note: The two commands ``gb2_job_delete`` and ``gb2_job_kill`` differ
@@ -506,37 +548,39 @@ class Gbasf2Process(BatchProcess):
         # Define setting for directory, into which the output dataset should be
         # downloaded. The ``gb2_ds_get`` command will create in that a directory
         # with the name of the project, which will contain the root files.
-        gbasf2_download_dir = get_setting("gbasf2_download_directory", default=".", task=self.task)
-        dataset_dir = os.path.join(gbasf2_download_dir, self.gbasf2_project_name)
+        default_output_dir = self.task.get_output_file_name(get_setting("gbasf2_project_name_prefix", task=self.task))
+        gbasf2_output_dir = get_setting("gbasf2_output_directory", default=default_output_dir, task=self.task)
 
         # check if dataset had been already downloaded and if so, skip downloading
-        if os.path.isdir(dataset_dir) and os.path.listdir(dataset_dir) == output_dataset_basenames:
-            print("Dataset already exists, skipping download.")
+        if os.path.isdir(gbasf2_output_dir) and os.path.listdir(gbasf2_output_dir) == output_dataset_basenames:
+            print(f"Dataset already exists in {gbasf2_output_dir}, skipping download.")
             return
 
-        # Go into temporary directory to download dataset. On success move it to the final destination
-        os.makedirs(gbasf2_download_dir, exist_ok=True)
-        with tempfile.TemporaryDirectory(dir=gbasf2_download_dir) as tmpdirname:
+        # To prevent from task being accidentally marked as complete when the gbasf2 dataset download failed,
+        # we create a temporary directory in the parent of ``gbasf2_output_dir`` and first download the dataset there.
+        # The download command will download it into a subdirectory with the same name as the project.
+        # If the download had been successful and the local files are identical to the list of files on the grid,
+        # we move the downloaded dataset to the location specified by ``gbasf2_output_dir``
+        parent_of_gbasf2_output_dir = os.path.dirname(gbasf2_output_dir)
+        os.makedirs(parent_of_gbasf2_output_dir, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=parent_of_gbasf2_output_dir) as tmpdir_path:
             ds_get_command = shlex.split(f"gb2_ds_get --force --user {self.dirac_user} {self.gbasf2_project_name}")
             print("Downloading dataset with command ", " ".join(ds_get_command))
-            output = subprocess.run(ds_get_command, check=True, env=self.gbasf2_env,
-                                    stdout=PIPE, encoding="utf-8", cwd=tmpdirname).stdout
+            output = subprocess.run(
+                ds_get_command, check=True, env=self.gbasf2_env, stdout=PIPE, encoding="utf-8", cwd=tmpdir_path).stdout
             print(output)
             if "No file found" in output:
                 raise RuntimeError(f"No output data for gbasf2 project {self.gbasf2_project_name} found.")
 
-            temporary_dataset_dir = os.path.join(tmpdirname, self.gbasf2_project_name)
-            downloaded_dataset_basenames = set(os.listdir(temporary_dataset_dir))
+            tmp_output_dir = os.path.join(tmpdir_path, self.gbasf2_project_name)
+            downloaded_dataset_basenames = set(os.listdir(tmp_output_dir))
             if output_dataset_basenames == downloaded_dataset_basenames:
-                shutil.move(src=temporary_dataset_dir, dst=os.path.join(gbasf2_download_dir, self.gbasf2_project_name))
-
-        # TODO: in the output dataset there is a root file created for each
-        # file in the input dataset.The output files are have numbers added to
-        # the filenames specified by the file names e.g. in the ``RootOutput``
-        # and ``VariablesToNtuple`` modules. That makes it hard for the user to
-        # define the output requirements in the ``output`` method of his task.
-        # So maybe merge the output files or do something else to facilitate
-        # defining outputs and checking that job is complete.
+                print(f"Download of {self.gbasf2_project_name} files successful.\n"
+                      f"Moving output files to {gbasf2_output_dir}")
+                shutil.move(src=tmp_output_dir, dst=gbasf2_output_dir)
+            else:
+                raise RuntimeError(f"The downloaded of files in {tmp_output_dir} is not equal to the "
+                                   f"dataset files for the grid project {self.gbasf2_project_name}")
 
     def _download_logs(self):
         """

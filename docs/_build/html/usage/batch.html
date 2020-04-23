@@ -644,7 +644,7 @@ If you want to blacklist a grid site, you can e.g. add</p>
         <span class="n">mbc_lower_cuts</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.15</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">mbc_lower_cut</span> <span class="ow">in</span> <span class="n">mbc_lower_cuts</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">MyAnalysisTask</span><span class="p">(</span>
-                <span class="n">mbc_range</span><span class="o">=</span><span class="p">(</span><span class="n">mbc_lower_cut</span><span class="p">,</span> <span class="mf">5.3</span><span class="p">),</span>
+                <span class="n">mbc_lower_cut</span><span class="o">=</span><span class="n">mbc_lower_cut</span><span class="p">,</span>
                 <span class="n">gbasf2_project_name_prefix</span><span class="o">=</span><span class="s2">&quot;luigiExample&quot;</span><span class="p">,</span>
                 <span class="n">gbasf2_input_dataset</span><span class="o">=</span><span class="n">input_dataset</span><span class="p">,</span>
                 <span class="n">max_event</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>

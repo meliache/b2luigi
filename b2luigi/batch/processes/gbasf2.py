@@ -1,14 +1,15 @@
-from datetime import datetime, timedelta
-from functools import lru_cache
-import os
-from collections import Counter
+import hashlib
 import json
+import os
 import shlex
 import shutil
 import subprocess
-from subprocess import PIPE
 import tempfile
 import warnings
+from collections import Counter
+from datetime import datetime, timedelta
+from functools import lru_cache
+from subprocess import PIPE
 
 from b2luigi.basf2_helper.utils import get_basf2_git_hash
 from b2luigi.batch.processes import BatchProcess, JobStatus
@@ -44,11 +45,11 @@ class Gbasf2Process(BatchProcess):
         the log files from the job sandboxes and automatically checks if the download was successful
         before moving the data to the final location.
 
-    Automatic rescheduling of failed jobs (experimental)
+    Automatic rescheduling of failed jobs
         Whenever a job fails, gbasf2 reschedules it as long as the number of retries is below the
         value of the setting ``gbasf2_max_retries``. It keeps track of the number of retries in a
-        local file, so that it does not change if you close b2luigi and start it again. Of course it
-        does not persist if you remove that file or move to a different machine.
+        local file in the ``log_file_dir``, so that it does not change if you close b2luigi and start it again.
+        Of course it does not persist if you remove that file or move to a different machine.
 
 
     .. note::
@@ -81,8 +82,10 @@ class Gbasf2Process(BatchProcess):
         - ``gbasf2_input_dataset``: The input dataset on the grid to use.
         - ``gbasf2_project_name_prefix``: A string with which your gbasf2 project names will start.
           To ensure the project associate with each unique task (i.e. for each of luigi parameters)
-          is unique, a hash generated from the luigi parameters of the task will be appended to the prefix
+          is unique, the unique ``task.task_id`` is hashed and appended to the prefix
           to create the actual gbasf2 project name.
+          Should be below 22 characters so that the project name with the hash can remain
+          under 32 characters.
 
         For example:
 
@@ -190,9 +193,17 @@ class Gbasf2Process(BatchProcess):
         #: Maximum number of times that each job in the project can be rescheduled until the project is declared as failed.
         self.max_retries = get_setting("gbasf2_max_retries", default=0, task=self.task)
 
-        self.retries_file_path = os.path.join(self.log_file_dir, "n_retries_by_job.json")
-        with open(self.retries_file_path, "r") as retries_file:
-            self.n_retries_by_job = Counter(json.loads(retries_file.read()))
+        #: Store number of times each job had been rescheduled
+        self.n_retries_by_job = Counter()
+
+        #: Local storage for ``n_retries_by_job`` counter
+        # so that it persists even if luigi process is killed and restarted.
+        # TODO: Maybe a small database (e.g. tindydb/pickledb) would be more appropriate
+        self.retries_file_path = os.path.join(self.log_file_dir, "n_retries_by_grid_job.json")
+        if os.path.isfile(self.retries_file_path):
+            with open(self.retries_file_path, "r") as retries_file:
+                retries_from_file = json.load(retries_file)
+                self.n_retries_by_job.update(retries_from_file)
 
         # Store dictionary with n_jobs_by_status in attribute to check if it changed,
         # useful for printing job status on change only
@@ -202,7 +213,6 @@ class Gbasf2Process(BatchProcess):
         # there's actions we want to do only the first time that
         # ``get_job_status`` returns a success.
         self._project_had_been_successful = False
-
 
     @property
     @lru_cache(maxsize=None)
@@ -304,9 +314,9 @@ class Gbasf2Process(BatchProcess):
         # However, we first try to reschedule thos jobs and only declare it as failed if the maximum number of retries
         # for reschedulinhas been reached
         if n_failed > 0:
-            if self._reschedule_failed_jobs():
-                return JobStatus.running
             self._on_failure_action()
+            if self.max_retries > 0 and self._reschedule_failed_jobs():
+                return JobStatus.running
             return JobStatus.aborted
 
         if n_in_final_state < n_jobs:
@@ -326,8 +336,8 @@ class Gbasf2Process(BatchProcess):
         """
         Things to do after all jobs in the project had been successful, e.g. downloading the dataset and logs
         """
-        self._download_dataset()
         self._download_logs()
+        self._download_dataset()
 
     def _on_failure_action(self):
         """
@@ -348,22 +358,22 @@ class Gbasf2Process(BatchProcess):
         for job_id, job_info in self._get_job_status_dict().items():
             if job_info["Status"] == "Failed":
                 if self.n_retries_by_job[job_id] >= self.max_retries:
-                    if self.max_retries > 0:
-                        warnings.warn(f"Reached maximum number of rescheduling tries ({self.max_retries}) for job {job_id}.")
+                    warnings.warn(f"Reached maximum number of rescheduling tries ({self.max_retries}) for job {job_id}.")
                     return False
                 self._reschedule_job(job_id)
                 self.n_retries_by_job[job_id] += 1
                 with open(self.retries_file_path, "w") as retries_file:
-                    retries_file.write(json.dumps(self.n_retries_by_job))
+                    json.dump(self.n_retries_by_job, retries_file)
         return True
 
     def _reschedule_job(self, job_id):
         """
         Reschedule job if the number of retries for it is below ``self.max_retries``
         """
-        print(f"Rescheduling job {job_id} (try {self.n_retries_by_job + 1}).")
+        n_retries = self.n_retries_by_job[job_id]
+        print(f"Rescheduling job {job_id} (retry no. {n_retries + 1}).")
         if self.n_retries_by_job[job_id] < self.max_retries:
-            reschedule_command = shlex.split(f"gb2_job_reschedule --jobid {job_id} --force", )
+            reschedule_command = shlex.split(f"gb2_job_reschedule --jobid {job_id} --force")
             subprocess.run(reschedule_command, check=True, env=self.gbasf2_env)
 
     def start_job(self):
@@ -564,7 +574,7 @@ class Gbasf2Process(BatchProcess):
         gbasf2_output_dir = get_setting("gbasf2_output_directory", default=default_output_dir, task=self.task)
 
         # check if dataset had been already downloaded and if so, skip downloading
-        if os.path.isdir(gbasf2_output_dir) and os.path.listdir(gbasf2_output_dir) == output_dataset_basenames:
+        if os.path.isdir(gbasf2_output_dir) and os.listdir(gbasf2_output_dir) == output_dataset_basenames:
             print(f"Dataset already exists in {gbasf2_output_dir}, skipping download.")
             return
 
@@ -589,6 +599,8 @@ class Gbasf2Process(BatchProcess):
             if output_dataset_basenames == downloaded_dataset_basenames:
                 print(f"Download of {self.gbasf2_project_name} files successful.\n"
                       f"Moving output files to {gbasf2_output_dir}")
+                if os.path.exists(gbasf2_output_dir):
+                    shutil.rmtree(gbasf2_output_dir)
                 shutil.move(src=tmp_output_dir, dst=gbasf2_output_dir)
             else:
                 raise RuntimeError(f"The downloaded of files in {tmp_output_dir} is not equal to the "
@@ -614,8 +626,21 @@ class Gbasf2Process(BatchProcess):
 
         These are stored in the task log dir.
         """
-        download_logs_command = shlex.split(f"gb2_job_output --user {self.dirac_user} -p {self.gbasf2_project_name}")
-        subprocess.run(download_logs_command, check=True, cwd=self.log_file_dir, env=self.gbasf2_env)
+        # We want to overwrite existing logs when retrieving the logs multiple
+        # times. To avoid a situation where we delete the existing logs before a
+        # new log download, but then the download fails and the user might be
+        # left with no logs, first the log download is performed to a temporary
+        # directory and then moved to the final location
+        with tempfile.TemporaryDirectory(dir=self.log_file_dir) as tmpdir_path:
+            download_logs_command = shlex.split(f"gb2_job_output --user {self.dirac_user} -p {self.gbasf2_project_name}")
+            subprocess.run(download_logs_command, check=True, cwd=tmpdir_path, env=self.gbasf2_env)
+            tmp_gbasf2_log_path = os.path.join(tmpdir_path, "log", self.gbasf2_project_name)
+            gbasf2_project_log_dir = os.path.join(self.log_file_dir, "gbasf2_logs", self.gbasf2_project_name)
+            print(f"Download of logs for gbasf2 project {self.gbasf2_project_name} successful.\n"
+                  f" Moving logs to {gbasf2_project_log_dir}")
+            if os.path.exists(gbasf2_project_log_dir):
+                shutil.rmtree(gbasf2_project_log_dir)
+            shutil.move(tmp_gbasf2_log_path, gbasf2_project_log_dir)
 
 
 def get_unique_gbasf2_project_name(task):
@@ -624,7 +649,7 @@ def get_unique_gbasf2_project_name(task):
     to a unique project name.
 
     This is done to make sure that different instances of a task with different
-    luigi parameters result in different gbasf2 project names.  When trying to
+    luigi parameters result in different gbasf2 project names. When trying to
     redoing a task on the grid with identical parameters, rename the project
     name prefix, to ensure that you get a new project.
     """
@@ -635,8 +660,10 @@ def get_unique_gbasf2_project_name(task):
             "Task can only be used with the gbasf2 batch process if it has ``gbasf2_project_name_prefix`` " +
             "as a luigi parameter, attribute or setting."
         ) from err
-
-    task_id_hash = task.task_id.split("_")[-1]
+    # luigi interally assings a hash to a task by calling the builtin ``hash(task.task_id)``,
+    # but that returns a signed integer. I prefer a hex string to get more information per character,
+    # which is why I decided to use ``hashlib.md5``.
+    task_id_hash = hashlib.md5(task.task_id.encode()).hexdigest()[0:10]
     gbasf2_project_name = gbasf2_project_name_prefix + task_id_hash
     max_project_name_length = 32
     assert len(gbasf2_project_name) <= max_project_name_length,\

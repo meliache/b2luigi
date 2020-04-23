@@ -472,10 +472,10 @@ and instead of resubmitting a new project, continue monitoring the running proje
 the log files from the job sandboxes and automatically checks if the download was successful
 before moving the data to the final location.</p>
 </dd>
-<dt>Automatic rescheduling of failed jobs (experimental)</dt><dd><p>Whenever a job fails, gbasf2 reschedules it as long as the number of retries is below the
+<dt>Automatic rescheduling of failed jobs</dt><dd><p>Whenever a job fails, gbasf2 reschedules it as long as the number of retries is below the
 value of the setting <code class="docutils literal notranslate"><span class="pre">gbasf2_max_retries</span></code>. It keeps track of the number of retries in a
-local file, so that it does not change if you close b2luigi and start it again. Of course it
-does not persist if you remove that file or move to a different machine.</p>
+local file in the <code class="docutils literal notranslate"><span class="pre">log_file_dir</span></code>, so that it does not change if you close b2luigi and start it again.
+Of course it does not persist if you remove that file or move to a different machine.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -508,8 +508,10 @@ but only tasks with a <code class="docutils literal notranslate"><span class="pr
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_input_dataset</span></code>: The input dataset on the grid to use.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_project_name_prefix</span></code>: A string with which your gbasf2 project names will start.
 To ensure the project associate with each unique task (i.e. for each of luigi parameters)
-is unique, a hash generated from the luigi parameters of the task will be appended to the prefix
-to create the actual gbasf2 project name.</p></li>
+is unique, the unique <code class="docutils literal notranslate"><span class="pre">task.task_id</span></code> is hashed and appended to the prefix
+to create the actual gbasf2 project name.
+Should be below 22 characters so that the project name with the hash can remain
+under 32 characters.</p></li>
 </ul>
 <p>For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">Basf2PathTask</span><span class="p">):</span>

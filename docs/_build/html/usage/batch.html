@@ -454,40 +454,50 @@ For an overview of possible settings refer to the
 <em class="property">class </em><code class="sig-prename descclassname">b2luigi.batch.processes.gbasf2.</code><code class="sig-name descname">Gbasf2Process</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#b2luigi.batch.processes.gbasf2.Gbasf2Process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#b2luigi.batch.processes.BatchProcess" title="b2luigi.batch.processes.BatchProcess"><code class="xref py py-class docutils literal notranslate"><span class="pre">b2luigi.batch.processes.BatchProcess</span></code></a></p>
 <p>Batch process for working with gbasf2 projects on the <em>LHC Computing Grid</em> (LCG).</p>
-<p><strong>What it does</strong></p>
-<dl class="simple">
-<dt>gbasf2 project submission</dt><dd><p>The gbasf2 batch process takes the basf2 path returned by the <code class="docutils literal notranslate"><span class="pre">create_path()</span></code>
+<dl>
+<dt>Features</dt><dd><ul>
+<li><p><strong>gbasf2 project submission</strong></p>
+<p>The gbasf2 batch process takes the basf2 path returned by the <code class="docutils literal notranslate"><span class="pre">create_path()</span></code>
 method of the task, saves it to the disk and creates a wrapper steering file that
 executes the saved path. It then sends both to the LCG via
 the BelleII-specific Dirac-wrapper gbasf2.</p>
-</dd>
-<dt>Project status monitoring</dt><dd><p>After the project submission, the gbasf batch process regularly checks the status
+</li>
+<li><p><strong>Project status monitoring</strong></p>
+<p>After the project submission, the gbasf batch process regularly checks the status
 of all the jobs belonging to a gbasf2 project returns a success if
 all jobs had been successful, while a single failed job results in a failed project.
 You can close a running b2luigi process and then start your script again and if a
 task with the same project name is running, this b2luigi gbasf2 wrapper will recognize that
 and instead of resubmitting a new project, continue monitoring the running project.</p>
-</dd>
-<dt>Download of datasets and logs</dt><dd><p>If all jobs had been successful, it automatically downloads the output dataset and
+</li>
+<li><p><strong>Automatic download of datasets and logs</strong></p>
+<p>If all jobs had been successful, it automatically downloads the output dataset and
 the log files from the job sandboxes and automatically checks if the download was successful
-before moving the data to the final location.</p>
-</dd>
-<dt>Automatic rescheduling of failed jobs</dt><dd><p>Whenever a job fails, gbasf2 reschedules it as long as the number of retries is below the
+before moving the data to the final location. On failure, it only downloads the logs.</p>
+</li>
+<li><p><strong>Automatic rescheduling of failed jobs</strong></p>
+<p>Whenever a job fails, gbasf2 reschedules it as long as the number of retries is below the
 value of the setting <code class="docutils literal notranslate"><span class="pre">gbasf2_max_retries</span></code>. It keeps track of the number of retries in a
 local file in the <code class="docutils literal notranslate"><span class="pre">log_file_dir</span></code>, so that it does not change if you close b2luigi and start it again.
 Of course it does not persist if you remove that file or move to a different machine.</p>
+</li>
+</ul>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>Limitations</strong></p>
-<ul class="simple">
+<p>Despite all the automatization that this gbasf2 wrapper provides, the user is expected to
+have a basic understanding of how the grid works and know the basics of working
+with gbasf2 commands manually.</p>
+</div>
+<dl>
+<dt>Limitations</dt><dd><ul class="simple">
 <li><p>The gbasf2 batch process for luigi can only be used for tasks
 inhereting from <code class="docutils literal notranslate"><span class="pre">Basf2PathTask</span></code> or other tasks with a
 <code class="docutils literal notranslate"><span class="pre">create_path()</span></code> method that returns a basf2 path.</p></li>
 <li><p>It can only be used for pickable/serializable basf2 paths, as it stores
-the path created by <code class="docutils literal notranslate"><span class="pre">create_path</span></code> in a python pickle file and runs that on the grid.</p></li>
-<li><p>basf2 variable aliases are at the moment not supported, as they are not included in the pickled path</p></li>
+the path created by <code class="docutils literal notranslate"><span class="pre">create_path</span></code> in a python pickle file and runs that on the grid.
+Therefore, <strong>basf2 variable aliases are not yet supported</strong>.</p></li>
 <li><p>Changing the batch to gbasf2 means you also have to adapt the output function of your task, because the
 output will not be a single root file anymore, but a collection of root files,
 one for each file in the input data set, in the directory given by the setting <code class="docutils literal notranslate"><span class="pre">gbasf2_output_directory</span></code>.
@@ -495,9 +505,7 @@ You should use this directory as the required output, as it is difficult to pred
 files will be named. The luigi gbasf2 wrapperdoesn’t merge the files and lets the user decide how he wants to
 handle them.</p></li>
 </ul>
-</div>
-<p><strong>Usage</strong></p>
-<dl>
+</dd>
 <dt>Settings for gbasf2 tasks</dt><dd><blockquote>
 <div><p>To submit a task with the gbasf2 wrapper, you first you have to add the property
 <code class="docutils literal notranslate"><span class="pre">batch_system</span> <span class="pre">=</span> <span class="pre">&quot;gbasf2&quot;</span></code>, which sets the <code class="docutils literal notranslate"><span class="pre">batch_system</span></code> setting.
@@ -549,6 +557,9 @@ rescheduled until the project is declared as failed.</p></li>
 <p>It is further possible to append arbitrary command line arguments to the <code class="docutils literal notranslate"><span class="pre">gbasf2</span></code> submission command
 with the <code class="docutils literal notranslate"><span class="pre">gbasf2_additional_params</span></code> setting.
 If you want to blacklist a grid site, you can e.g. add</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">b2luigi</span><span class="o">.</span><span class="n">set_setting</span><span class="p">(</span><span class="s2">&quot;gbasf2_additional_params&quot;</span><span class="p">,</span>  <span class="s2">&quot;--banned_site LCG.KEK.jp&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 <dt>Example</dt><dd><p>Here is an example file to submit an analysis path created by the script in
 <code class="docutils literal notranslate"><span class="pre">examples/gbasf2/example_mdst_analysis</span></code> to grid via gbasf2:</p>
@@ -661,7 +672,7 @@ If you want to blacklist a grid site, you can e.g. add</p>
 </dd>
 <dt>Handling failed jobs</dt><dd><p>The gbasf2 input wrapper considers the gbasf2 project as failed if any of
 the jobs in the project failed and reached the maximum number of retries.
-It the automatically downloads the logs, so please look into them to see what the reason was.
+It then automatically downloads the logs, so please look into them to see what the reason was.
 For example, it can be that only certain grid sites were affected, so you might want to exclude them
 by adding the <code class="docutils literal notranslate"><span class="pre">&quot;--banned_site</span> <span class="pre">...</span></code> to <code class="docutils literal notranslate"><span class="pre">gbasf2_additional_params</span></code>.</p>
 <p>You also always reschedule jobs manually with the <code class="docutils literal notranslate"><span class="pre">gb2_job_reschedule</span></code> command or delete them with
@@ -670,15 +681,6 @@ existed. Then run just run your luigi task/script again and it will start monito
 again.</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Note on nomenclature:</strong>
-The <code class="docutils literal notranslate"><span class="pre">BatchProcess</span></code> is intended to work with jobs, thus is has method names such as
-<code class="docutils literal notranslate"><span class="pre">get_job_status</span></code>. The gbasf2 implementation of that class is special in that it wraps
-gbasf2 projects, of which each contains multiple grid jobs, one for each file in the input
-dataset. The actual (sub-) job handling is left to gbasf2. So the job status of the batch process
-refers to the status of the whole project.</p>
-</div>
 </dd></dl>
 
 </div>

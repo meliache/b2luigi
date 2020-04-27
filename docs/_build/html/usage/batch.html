@@ -473,7 +473,8 @@ and instead of resubmitting a new project, continue monitoring the running proje
 <li><p><strong>Automatic download of datasets and logs</strong></p>
 <p>If all jobs had been successful, it automatically downloads the output dataset and
 the log files from the job sandboxes and automatically checks if the download was successful
-before moving the data to the final location. On failure, it only downloads the logs.</p>
+before moving the data to the final location. On failure, it only downloads the logs.
+The dataset download can be optionally disabled.</p>
 </li>
 <li><p><strong>Automatic rescheduling of failed jobs</strong></p>
 <p>Whenever a job fails, gbasf2 reschedules it as long as the number of retries is below the
@@ -521,16 +522,15 @@ to create the actual gbasf2 project name.
 Should be below 22 characters so that the project name with the hash can remain
 under 32 characters.</p></li>
 </ul>
-<p>For example:</p>
+<p>The following example shows a minimal class with all required options to run on the gbasf2/grid batch:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">Basf2PathTask</span><span class="p">):</span>
     <span class="n">batch_system</span> <span class="o">=</span> <span class="s2">&quot;gbasf2&quot;</span>
     <span class="n">gbasf2_project_name_prefix</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">significant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">gbasf2_input_dataset</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">hashed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The following settings are not required as they have default values, but they are still important enough
-to be explained here:</p>
-<ul class="simple">
+<p>Other not required, but noteworthy settings are:</p>
+<ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_install_directory</span></code>: Defaults to <code class="docutils literal notranslate"><span class="pre">~/gbasf2KEK</span></code>. If you installed gbasf2 into another
 location, you have to change that setting accordingly.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_output_directory</span></code>: Directory into which the outputs of the gbasf2 grid project will be moved
@@ -542,6 +542,22 @@ Set this if you want the jobs to use another release on the grid.</p></li>
 printing of of the job summaries, that is the number of jobs in different states in a gbasf2 project.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_max_retries</span></code>: Default to 0. Maximum number of times that each job in the project can be automatically
 rescheduled until the project is declared as failed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_download_dataset</span></code>: Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Disable this setting if you don’t want to download the
+output dataset from the grid on job success. As you can’t use the downloaded dataset as an output target for luigi,
+you should then use the provided <code class="docutils literal notranslate"><span class="pre">Gbasf2GridProjectTarget</span></code>, as shown in the following example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">b2luigi.batch.processes.gbasf2</span> <span class="kn">import</span> <span class="n">get_unique_project_name</span><span class="p">,</span> <span class="n">Gbasf2GridProjectTarget</span>
+
+<span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">Basf2PathTask</span><span class="p">):</span>
+    <span class="c1"># [...]</span>
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">project_name</span> <span class="o">=</span> <span class="n">get_unique_project_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Gbasf2GridProjectTarget</span><span class="p">(</span><span class="n">project_name</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is useful when chaining gbasf2 tasks together,
+as they don’t need the output locally but take the grid datasets as input. Also useful when you just want
+to produce data on the grid for other people to use.</p>
+</li>
 </ul>
 <p>The following optional settings correspond to the equally named <code class="docutils literal notranslate"><span class="pre">gbasf</span></code> command line options
 (without the <code class="docutils literal notranslate"><span class="pre">gbasf_</span></code> prefix) that you can set to customize your gbasf2 project:</p>

@@ -10,18 +10,22 @@ import vertex as vx
 from stdCharged import stdK, stdPi
 
 
-def create_analysis_path(mbc_range=[5.2, 5.3]):
+def create_analysis_path(
+        b_ntuple_filename="B_ntuple.root",
+        d_ntuple_filename="D_ntuple.root",
+        mbc_range=(5.2, 5.3),
+):
     """
     Example of a minimal reconstruction with a cut as a changeable function
     parameter, adapted from code in the ``B2T_Basics_3_FirstAnalysis.ipynb``
     notebook from b2 starter kit.
     """
     path = basf2.create_path()
-    # define some testing input on KEKCC, though gbasf2 will automatically
-    # replace it by the correct input files from the input data set on the grid
+    # this local inputMdstList will only be used when this steerig file is run locally, gbasf2 overrides it
+    local_input_files = ["/group/belle2/dataprod/MC/MC13a/prod00009434/s00/e1003/4S/r00000/mixed/mdst/sub00/mdst_000001_prod00009434_task10020000001.root"]
     mA.inputMdstList(
         environmentType="default",
-        filelist=["/group/belle2/dataprod/MC/MC13a/prod00009434/s00/e1003/4S/r00000/mixed/mdst/sub00/mdst_000001_prod00009434_task10020000001.root"],
+        filelist=local_input_files,
         path=path,
     )
     stdK("higheff", path=path)
@@ -36,15 +40,18 @@ def create_analysis_path(mbc_range=[5.2, 5.3]):
         vx.vertexTree('B+', 0.1, path=path)
     mA.setAnalysisConfigParams({"mcMatchingVersion": "BelleII"}, path)
     mA.matchMCTruth('B-', path=path)
+    mA.variablesToNtuple('D0:Kpi', ['M', 'p', 'E', 'useCMSFrame(p)', 'useCMSFrame(E)', 'daughter(0, kaonID)',
+                                    'daughter(1, pionID)', 'isSignal', 'mcErrors'],
+                         filename=d_ntuple_filename, treename="D", path=path)
     mA.variablesToNtuple('B-', ['Mbc', 'deltaE', 'isSignal', 'mcErrors', 'M'],
-                         filename="ntuple.root", treename="B", path=path)
+                         filename=b_ntuple_filename, treename="B", path=path)
     return path
 
 
 if __name__ == '__main__':
-    # Use this to execute the analysis path if this file is called as a mine
+    # Use this to execute the analysis path if this file is called as a main
     # file. It can be used to test the analysis path independently of the gbasf2
-    # luigi task. But if this module is only imported, the followinis not executed.
+    # luigi task. But if this module is only imported, the following is not executed.
     path = create_analysis_path()
     basf2.print_path(path)
     basf2.process(path)

@@ -501,7 +501,7 @@ the path created by <code class="docutils literal notranslate"><span class="pre"
 Therefore, <strong>basf2 variable aliases are not yet supported</strong>.</p></li>
 <li><p>Changing the batch to gbasf2 means you also have to adapt the output function of your task, because the
 output will not be a single root file anymore, but a collection of root files,
-one for each file in the input data set, in the directory given by the setting <code class="docutils literal notranslate"><span class="pre">gbasf2_output_directory</span></code>.
+one for each file in the input data set, in the directory given by the setting <code class="docutils literal notranslate"><span class="pre">outputectory</span></code>.
 You should use this directory as the required output, as it is difficult to predict what the output
 files will be named. The luigi gbasf2 wrapperdoesn’t merge the files and lets the user decide how he wants to
 handle them.</p></li>
@@ -514,7 +514,10 @@ It is not recommended to set that setting globally, as not all tasks can be subm
 but only tasks with a <code class="docutils literal notranslate"><span class="pre">create_path</span></code> method.</p>
 <p>For gbasf2 tasks it is further required to set the settings</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_input_dataset</span></code>: The input dataset on the grid to use.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_input_dataset</span></code>: String with the logical path of a dataset on the grid to use as an input to the task.
+You can provide multiple inputs by having multiple paths contained in this string, separated by commas without spaces.
+An alternative is to just instantiate multiple tasks with different input datasets, if you want to know in retrospect
+which input dataset had been used for the production of a specific output.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_project_name_prefix</span></code>: A string with which your gbasf2 project names will start.
 To ensure the project associate with each unique task (i.e. for each of luigi parameters)
 is unique, the unique <code class="docutils literal notranslate"><span class="pre">task.task_id</span></code> is hashed and appended to the prefix
@@ -533,9 +536,6 @@ under 32 characters.</p></li>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_install_directory</span></code>: Defaults to <code class="docutils literal notranslate"><span class="pre">~/gbasf2KEK</span></code>. If you installed gbasf2 into another
 location, you have to change that setting accordingly.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_output_directory</span></code>: Directory into which the outputs of the gbasf2 grid project will be moved
-if the the dataset download via <code class="docutils literal notranslate"><span class="pre">gb2_ds_get</span></code> had been successful. It defaults to the value that you
-get from running <code class="docutils literal notranslate"><span class="pre">task.get_output_file_name()</span></code> on the <code class="docutils literal notranslate"><span class="pre">gbasf2_project_name_prefix</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_release</span></code>: Defaults to the release of your currently set up basf2 release.
 Set this if you want the jobs to use another release on the grid.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gbasf2_print_status_updates</span></code>: Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>. By setting it to <code class="docutils literal notranslate"><span class="pre">False</span></code> you can turn off the
@@ -631,7 +631,11 @@ If you want to blacklist a grid site, you can e.g. add</p>
 48
 49
 50
-51</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span>
+51
+52
+53
+54
+55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span>
 
 <span class="kn">import</span> <span class="nn">b2luigi</span>
 <span class="kn">from</span> <span class="nn">b2luigi.basf2_helper.tasks</span> <span class="kn">import</span> <span class="n">Basf2PathTask</span>
@@ -646,16 +650,20 @@ If you want to blacklist a grid site, you can e.g. add</p>
     <span class="c1"># b2luigi will then add a hash derived from the luigi parameters to create a unique project name.</span>
     <span class="n">gbasf2_project_name_prefix</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">()</span>
     <span class="n">gbasf2_input_dataset</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">hashed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
     <span class="c1"># Example luigi cut parameter to facilitate starting multiple projects for different cut values</span>
     <span class="n">mbc_lower_cut</span> <span class="o">=</span> <span class="n">b2luigi</span><span class="o">.</span><span class="n">IntParameter</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">create_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mbc_range</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mbc_lower_cut</span><span class="p">,</span> <span class="mf">5.3</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">example_mdst_analysis</span><span class="o">.</span><span class="n">create_analysis_path</span><span class="p">(</span><span class="n">mbc_range</span><span class="o">=</span><span class="n">mbc_range</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">example_mdst_analysis</span><span class="o">.</span><span class="n">create_analysis_path</span><span class="p">(</span>
+            <span class="n">d_ntuple_filename</span><span class="o">=</span><span class="s2">&quot;D_ntuple.root&quot;</span><span class="p">,</span>
+            <span class="n">b_ntuple_filename</span><span class="o">=</span><span class="s2">&quot;B_ntuple.root&quot;</span><span class="p">,</span>
+            <span class="n">mbc_range</span><span class="o">=</span><span class="n">mbc_range</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gbasf2_project_name_prefix</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;D_ntuple.root&quot;</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_output</span><span class="p">(</span><span class="s2">&quot;B_ntuple.root&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">MasterTask</span><span class="p">(</span><span class="n">b2luigi</span><span class="o">.</span><span class="n">WrapperTask</span><span class="p">):</span>

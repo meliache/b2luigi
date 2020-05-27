@@ -65,7 +65,7 @@ class Gbasf2Process(BatchProcess):
 
         - It can be used **only for pickable basf2 paths**, as it stores
           the path created by ``create_path`` in a python pickle file and runs that on the grid.
-          Therefore, **basf2 variable aliases and python basf2 modules are not yet supported**. 
+          Therefore, **basf2 variable aliases and python basf2 modules are not yet supported**.
           To see if the path produced by a steering file is pickable, you can try to dump it with
           ``basf2 --dump-path`` and execute it again with ``basf2 --execute-path``.
 
@@ -82,7 +82,7 @@ class Gbasf2Process(BatchProcess):
                         │   └── ...
                         ├── D_ntuple.root
                         │   └── D_ntuple_0.root
-                        │   └── ... 
+                        │   └── ...
 
 
 
@@ -114,7 +114,7 @@ class Gbasf2Process(BatchProcess):
                gbasf2_project_name_prefix = b2luigi.Parameter(significant=False)
                gbasf2_input_dataset = b2luigi.Parameter(hashed=True)
 
-        Other not required, but noteworthy settings are:
+        Other noteworthy settings are:
 
         - ``gbasf2_install_directory``: Defaults to ``~/gbasf2KEK``. If you installed gbasf2 into another
           location, you have to change that setting accordingly.
@@ -124,6 +124,18 @@ class Gbasf2Process(BatchProcess):
           printing of of the job summaries, that is the number of jobs in different states in a gbasf2 project.
         - ``gbasf2_max_retries``: Default to 0. Maximum number of times that each job in the project can be automatically
           rescheduled until the project is declared as failed.
+        - ``gbasf2_custom_steering_template_path``: If you want to use your own steering file wrapper to execute the basf2 path.
+          Useful if you need to add additional basf2 configuration which is not stored in the basf2 path and can not be configure
+          via basf2/gbasf2 command line arguments. For that you should copy the existing jinja2_ template below and add
+          your basf2 configuration lines to it, as if it were a python steering file (the curly brackets ``{{ }}``
+          are place-holders). Then, provide the absolute path to that file via this setting.
+
+          .. _jinja2: https://jinja.palletsprojects.com
+
+          .. literalinclude:: ../../b2luigi/batch/processes/templates/gbasf2_steering_file_wrapper.jinja2
+             :caption: File: ``b2luigi/batch/processes/templates/gbasf2_steering_file_wrapper.jinja2``
+             :linenos:
+
         - ``gbasf2_download_dataset``: Defaults to ``True``. Disable this setting if you don't want to download the
           output dataset from the grid on job success. As you can't use the downloaded dataset as an output target for luigi,
           you should then use the provided ``Gbasf2GridProjectTarget``, as shown in the following example:
@@ -469,7 +481,10 @@ class Gbasf2Process(BatchProcess):
         basf2 path from ``self.task.create_path()``.
         """
         # read a jinja2 template for the steerinfile that should execute the pickled path
-        template_file_path = os.path.join(self._file_dir, "templates/gbasf2_steering_file_wrapper.jinja2")
+        default_template_file_path = os.path.join(self._file_dir, "templates/gbasf2_steering_file_wrapper.jinja2")
+        template_file_path = get_setting("gbasf2_custom_steering_template_path",
+                                         default=default_template_file_path,
+                                         task=self.task)
         with open(template_file_path, "r") as template_file:
             template = Template(template_file.read())
             # replace some variable values in the templates

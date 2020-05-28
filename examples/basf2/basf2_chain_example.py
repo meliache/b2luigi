@@ -7,6 +7,7 @@ import basf2
 
 import modularAnalysis
 import simulation
+import vertex
 import generators
 import reconstruction
 from ROOT import Belle2
@@ -26,7 +27,7 @@ class SimulationTask(Basf2PathTask):
         modularAnalysis.setupEventInfo(self.n_events, path)
 
         if self.event_type == SimulationType.y4s:
-            dec_file = Belle2.FileSystem.findFile('analysis/examples/tutorials/B2A101-Y4SEventGeneration.dec')
+            dec_file = Belle2.FileSystem.findFile('analysis/examples/simulations/B2A101-Y4SEventGeneration.dec')
         elif self.event_type == SimulationType.continuum:
             dec_file = Belle2.FileSystem.findFile('analysis/examples/simulations/B2A102-ccbarEventGeneration.dec')
         else:
@@ -68,10 +69,12 @@ class AnalysisTask(Basf2PathTask):
         modularAnalysis.inputMdstList('default', self.get_input_file_names("reconstructed_output.root"), path=path)
         modularAnalysis.fillParticleLists([('K+', 'kaonID > 0.1'), ('pi+', 'pionID > 0.1')], path=path)
         modularAnalysis.reconstructDecay('D0 -> K- pi+', '1.7 < M < 1.9', path=path)
-        modularAnalysis.fitVertex('D0', 0.1, path=path)
         modularAnalysis.matchMCTruth('D0', path=path)
         modularAnalysis.reconstructDecay('B- -> D0 pi-', '5.2 < Mbc < 5.3', path=path)
-        modularAnalysis.fitVertex('B+', 0.1, path=path)
+        try:  # treeFit is the new function name in light releases after release 4 (e.g. light-2002-janus)
+            vertex.treeFit('B+', 0.1, update_all_daughters=True, path=path)
+        except AttributeError:  # vertexTree is the function name in release 4
+            vertex.vertexTree('B+', 0.1, update_all_daughters=True, path=path)
         modularAnalysis.matchMCTruth('B-', path=path)
         modularAnalysis.variablesToNtuple('D0',
                                           ['M', 'p', 'E', 'useCMSFrame(p)', 'useCMSFrame(E)',

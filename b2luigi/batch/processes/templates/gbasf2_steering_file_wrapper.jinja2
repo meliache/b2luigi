@@ -48,17 +48,17 @@ def apply_alias_dict_from_file(file_path):
         vm.addAlias(alias_name, alias_value)
 
 
-# monkey-patch deserialize_module so that pickle_utils also support python modules
-b2pp.deserialize_module = deserialize_module_or_pymodule
+if __name__ == '__main__':
+    # monkey-patch deserialize_module so that pickle_utils also support python modules
+    b2pp.deserialize_module = deserialize_module_or_pymodule
 
+    pickle_file_path = "{{ pickle_file_path }}"
+    if not os.path.isfile(pickle_file_path):
+        raise FileNotFoundError(f"No pickle file found in {pickle_file_path}")
 
-pickle_file_path = "{{ pickle_file_path }}"
-if not os.path.isfile(pickle_file_path):
-    raise FileNotFoundError(f"No pickle file found in {pickle_file_path}")
+    apply_alias_dict_from_file(pickle_file_path)
+    path = b2pp.get_path_from_file(pickle_file_path)
 
-apply_alias_dict_from_file(pickle_file_path)
-path = b2pp.get_path_from_file(pickle_file_path)
-
-basf2.print_path(path)
-basf2.process(path, max_event={{ max_event }})
-print(basf2.statistics)
+    basf2.print_path(path)
+    basf2.process(path, max_event={{ max_event }})
+    print(basf2.statistics)

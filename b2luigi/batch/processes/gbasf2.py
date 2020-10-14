@@ -68,12 +68,6 @@ class Gbasf2Process(BatchProcess):
           inhereting from ``Basf2PathTask`` or other tasks with a
           ``create_path()`` method that returns a basf2 path.
 
-        - It can be used **only for pickable basf2 paths**, as it stores
-          the path created by ``create_path`` in a python pickle file and runs that on the grid.
-          Therefore, **python basf2 modules are not yet supported**.
-          To see if the path produced by a steering file is pickable, you can try to dump it with
-          ``basf2 --dump-path`` and execute it again with ``basf2 --execute-path``.
-
         - Output format: Changing the batch to gbasf2 means you also have to
           adapt how you handle the output of your gbasf2 task in tasks depending
           on it, because the output will not be a single root file anymore (e.g.
